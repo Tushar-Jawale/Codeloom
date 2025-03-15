@@ -1,0 +1,94 @@
+.HomeWrapper {
+height:100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.FormWrapper{
+  background-color: #282a36;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+}
+
+footer{
+  position: fixed;
+  bottom: 0;
+}
+
+.inputGroup{
+  display: flex;
+  flex-direction: column;
+}
+
+.mainLabel{
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.logo{
+  height: 80px;
+  margin-bottom: 30px;
+}
+
+.inputBox{
+  padding: 8px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  margin-bottom: 14px;
+  font-size: 14px;
+  background-color: #eee;
+}
+
+.inputField{
+  padding: 8px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  margin-bottom: 14px;
+  font-size: 14px;
+  background-color: #eee;
+}
+
+.btn{
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition:  0.3s all ease-in-out;
+}
+
+.joinButton{
+   background-color: #4aed88;
+   width: 100px;
+   margin-left: auto;
+
+}
+
+.joinButton:hover{
+  background-color: #2b824c;
+}
+
+.createInfo{
+  margin: 0 auto;
+  margin-top: 20px;
+
+}
+
+.createNewBtn{
+  color: #4aed88;
+  text-decoration: none;
+  border-bottom: 1px solid #4aed88;
+  transition: all 0.3s ease-in-out;
+}
+
+.createNewBtn:hover{
+  color: #2b824c;
+  border-color: #368364;
+  
+}
