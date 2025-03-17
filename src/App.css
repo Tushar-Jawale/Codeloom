@@ -63,14 +63,14 @@ footer{
   transition:  0.3s all ease-in-out;
 }
 
-.joinButton{
+.joinButton,.leaveBtn{
    background-color: #4aed88;
    width: 100px;
    margin-left: auto;
 
 }
 
-.joinButton:hover{
+.joinButton:hover,.leaveBtn:hover{
   background-color: #2b824c;
 }
 
@@ -92,3 +92,47 @@ footer{
   border-color: #368364;
   
 }
+
+.editorPage{
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  height: 100vh;
+}
+
+.aside{
+  background-color: #1c1e29;
+  padding: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.asideInnerContainer{
+  flex:1;
+}
+
+.connectedUsersContainer{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+
+.client{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+}
+
+.userName{
+  margin-top: 7px;
+}
+
+.leaveBtn{
+  width: 100%;
+  margin-top: 20px;
+}
+
+  

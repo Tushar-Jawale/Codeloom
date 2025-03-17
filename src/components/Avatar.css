@@ -1,0 +1,8 @@
+.avatar-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-wrapper img {
+    border: 2px solid #4aed88;
+} 
