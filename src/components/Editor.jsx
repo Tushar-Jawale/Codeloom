@@ -1,18 +1,29 @@
 import React, { useState, useRef, useEffect } from 'react';
 import LANGUAGE_CONFIG from './languageConfig';
 import OutputPanel from '../pages/OutputPanel';
-import CustomScrollbar from './CustomScrollbar';
+import { getLanguageIcon } from '../services/pistonService';
 import './Editor.css';
 
 const Editor = () => {
   const [language, setLanguage] = useState('javascript');
   const [code, setCode] = useState(LANGUAGE_CONFIG[language].defaultCode);
   const [lines, setLines] = useState(['1']);
-  const [fontSize, setFontSize] = useState(14);
+  const [fontSize, setFontSize] = useState(() => {
+    const saved = localStorage.getItem('editor-font-size');
+    return saved ? parseInt(saved) : 14;
+  });
   const textareaRef = useRef(null);
   const lineNumbersRef = useRef(null);
 
-  // Load saved code and font size on mount
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.fontSize = `${fontSize}px`;
+    }
+    if (lineNumbersRef.current) {
+      lineNumbersRef.current.style.fontSize = `${fontSize}px`;
+    }
+  }, [fontSize]);
+
   useEffect(() => {
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     if (savedCode) {
@@ -20,21 +31,14 @@ const Editor = () => {
     } else {
       setCode(LANGUAGE_CONFIG[language].defaultCode);
     }
-    
-    const savedFontSize = localStorage.getItem('editor-font-size');
-    if (savedFontSize) {
-      setFontSize(parseInt(savedFontSize));
-    }
   }, [language]);
 
-  // Update line numbers when code changes
   useEffect(() => {
     const lineCount = code.split('\n').length;
     const newLines = Array.from({ length: lineCount }, (_, i) => (i + 1).toString());
     setLines(newLines);
   }, [code]);
 
-  // Sync line numbers with textarea scroll
   const handleTextAreaScroll = (e) => {
     if (lineNumbersRef.current) {
       lineNumbersRef.current.scrollTop = e.target.scrollTop;
@@ -43,7 +47,6 @@ const Editor = () => {
 
   const handleChange = (e) => {
     setCode(e.target.value);
-    // Save code to localStorage
     localStorage.setItem(`editor-code-${language}`, e.target.value);
   };
 
@@ -53,11 +56,9 @@ const Editor = () => {
       const start = e.target.selectionStart;
       const end = e.target.selectionEnd;
       
-      // Insert 2 spaces for tab
       const newText = code.substring(0, start) + '  ' + code.substring(end);
       setCode(newText);
       
-      // Put cursor after the inserted tab
       setTimeout(() => {
         textareaRef.current.selectionStart = start + 2;
         textareaRef.current.selectionEnd = start + 2;
@@ -65,10 +66,16 @@ const Editor = () => {
     }
   };
 
-  const handleFontSizeChange = (newSize) => {
-    const size = Math.min(Math.max(newSize, 12), 24);
-    setFontSize(size);
-    localStorage.setItem('editor-font-size', size.toString());
+  const increaseFontSize = () => {
+    const newSize = Math.min(fontSize + 1, 24);
+    setFontSize(newSize);
+    localStorage.setItem('editor-font-size', newSize.toString());
+  };
+
+  const decreaseFontSize = () => {
+    const newSize = Math.max(fontSize - 1, 12);
+    setFontSize(newSize);
+    localStorage.setItem('editor-font-size', newSize.toString());
   };
 
   const handleRefresh = () => {
@@ -79,18 +86,17 @@ const Editor = () => {
   return (
     <div className="editor-container-with-output">
       <div className="editor-wrapper">
-        {/* Header */}
         <div className="editor-header">
           <div className="language-selector">
-            <div className="language-icon">{LANGUAGE_CONFIG[language].icon}</div>
+            <div className="language-icon">{getLanguageIcon(language)}</div>
             <select 
               value={language} 
               onChange={(e) => setLanguage(e.target.value)}
               className="language-select"
             >
-              {Object.keys(LANGUAGE_CONFIG).map(lang => (
-                <option key={lang} value={lang}>
-                  {LANGUAGE_CONFIG[lang].name}
+              {Object.entries(LANGUAGE_CONFIG).map(([key, config]) => (
+                <option key={key} value={key}>
+                  {config.label}
                 </option>
               ))}
             </select>
@@ -98,15 +104,9 @@ const Editor = () => {
           <div className="editor-controls">
             <div className="font-size-control">
               <span className="font-label">Font Size:</span>
-              <input
-                type="range"
-                min="12"
-                max="24"
-                value={fontSize}
-                onChange={(e) => handleFontSizeChange(parseInt(e.target.value))}
-                className="font-slider"
-              />
-              <span className="font-size-value">{fontSize}</span>
+              <button onClick={decreaseFontSize} className="font-size-button">-</button>
+              <span className="font-size-value">{fontSize}px</span>
+              <button onClick={increaseFontSize} className="font-size-button">+</button>
             </div>
             <button onClick={handleRefresh} className="refresh-button">
               Reset
@@ -114,14 +114,13 @@ const Editor = () => {
           </div>
         </div>
 
-        {/* Editor Container with Custom Scrollbar */}
-        <div className="editor-container" style={{ fontSize: `${fontSize}px` }}>
+        <div className="editor-container">
           <div ref={lineNumbersRef} className="line-numbers">
             {lines.map((line, index) => (
               <div key={index} className="line-number">{line}</div>
             ))}
           </div>
-          <CustomScrollbar className="editor-scrollbar">
+          <div className="editor-scrollbar">
             <textarea 
               ref={textareaRef}
               value={code}
@@ -131,19 +130,16 @@ const Editor = () => {
               className="code-textarea"
               spellCheck="false"
               wrap="off"
-              placeholder={`Write your ${LANGUAGE_CONFIG[language].name} code here...`}
+              placeholder={`Write your ${LANGUAGE_CONFIG[language].label} code here...`}
             />
-          </CustomScrollbar>
+          </div>
         </div>
       </div>
       
-      {/* Output Panel with Custom Scrollbar */}
       <div className="output-wrapper">
-        <CustomScrollbar>
-          <div className="output-panel-container">
-            <OutputPanel code={code} language={language} />
-          </div>
-        </CustomScrollbar>
+        <div className="output-panel-container">
+          <OutputPanel code={code} language={language} />
+        </div>
       </div>
     </div>
   );

@@ -1,36 +1,21 @@
 .editor-container-with-output {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background-color: #1e1e2e;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .editor-wrapper {
-  width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
   overflow: hidden;
-  background-color: #12121a;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.output-wrapper {
-  width: 100%;
-  height: 300px;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #12121a;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.output-panel-container {
-  height: 100%;
-  width: 100%;
+  background-color: #282c34;
+  border-radius: 8px 8px 0 0;
 }
 
 .editor-header {
@@ -39,7 +24,7 @@
   align-items: center;
   padding: 12px 16px;
   background-color: #1e1e2e;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .language-selector {
@@ -49,57 +34,73 @@
 }
 
 .language-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .language-select {
   background-color: #282c34;
-  color: #f8f8f2;
+  color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
-  padding: 6px 10px;
+  padding: 6px 12px;
   font-size: 14px;
-  outline: none;
   cursor: pointer;
 }
 
 .language-select:hover {
-  background-color: #333842;
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: #2c3038;
 }
 
 .editor-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .font-size-control {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-right: 16px;
+}
+
+.font-label {
   color: #abb2bf;
   font-size: 14px;
 }
 
-.font-slider {
-  width: 100px;
+.font-size-button {
+  background-color: #3a3f4b;
+  color: #abb2bf;
+  border: none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.font-size-button:hover {
+  background-color: #4a4f5b;
+  color: #fff;
 }
 
 .font-size-value {
-  min-width: 24px;
+  min-width: 36px;
   text-align: center;
+  color: #abb2bf;
+  font-size: 14px;
 }
 
 .refresh-button {
-  background-color: #282c34;
-  color: #abb2bf;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #61afef;
+  color: #fff;
+  border: none;
   border-radius: 4px;
   padding: 6px 12px;
   font-size: 14px;
@@ -108,20 +109,14 @@
 }
 
 .refresh-button:hover {
-  background-color: #333842;
-  color: #f8f8f2;
+  background-color: #528bff;
 }
 
 .editor-container {
   flex: 1;
   display: flex;
-  background-color: #282c34;
-  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
   overflow: hidden;
-}
-
-.editor-scrollbar {
-  flex: 1;
+  position: relative;
 }
 
 .line-numbers {
@@ -139,13 +134,19 @@
 }
 
 .line-number {
-  padding-right: 5px;
+  padding: 0 4px;
+}
+
+.editor-scrollbar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  position: relative;
 }
 
 .code-textarea {
-  width: 100%;
-  height: auto;
-  min-height: 100%;
+  flex: 1;
   padding: 15px;
   color: #f8f8f2;
   font-size: inherit;
@@ -156,31 +157,47 @@
   outline: none;
   tab-size: 2;
   white-space: pre;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
+  scrollbar-width: auto;
+  scrollbar-color: #89b4fa #21252b;
 }
 
-/* Customize scrollbar theme for the editor */
-.editor-scrollbar .custom-scrollbars__scrollbar {
-  background-color: rgba(24, 24, 37, 0.3);
+.output-wrapper {
+  height: 300px;
+  overflow: hidden;
+  background-color: #1e1e2e;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0 0 8px 8px;
 }
 
-.editor-scrollbar .custom-scrollbars__track {
-  background-color: rgba(24, 24, 37, 0.3);
+.output-panel-container {
+  height: 100%;
+  width: 100%;
 }
 
-.editor-scrollbar .custom-scrollbars__thumb {
-  background-color: rgba(137, 180, 250, 0.5);
+.code-textarea::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  display: block;
 }
 
-.editor-scrollbar .custom-scrollbars__thumb:hover {
-  background-color: rgba(137, 180, 250, 0.8);
+.code-textarea::-webkit-scrollbar-track {
+  background: #21252b;
 }
 
-.editor-scrollbar .custom-scrollbars__button {
-  background-color: rgba(30, 30, 46, 0.5);
-  color: #cdd6f4;
+.code-textarea::-webkit-scrollbar-thumb {
+  background: #89b4fa;
+  border-radius: 4px;
+  border: 2px solid #21252b;
+  min-height: 30px;
 }
 
-/* Add syntax highlighting styles */
-.code-textarea::selection {
-  background-color: rgba(255, 255, 255, 0.15);
+.code-textarea::-webkit-scrollbar-thumb:hover {
+  background: #b4befe;
+}
+
+.code-textarea::-webkit-scrollbar-corner {
+  background: #21252b;
 } 

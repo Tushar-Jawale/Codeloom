@@ -67,6 +67,11 @@
   cursor: not-allowed;
 }
 
+.font-slider {
+  width: 100%;
+  cursor: pointer;
+}
+
 .copy-button {
   background-color: #313244;
   color: #cdd6f4;
@@ -173,4 +178,275 @@
 
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.output-panel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: #1e1e2e;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.output-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #181825;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.output-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.output-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background-color: #313244;
+  border-radius: 4px;
+}
+
+.terminal-icon {
+  width: 16px;
+  height: 16px;
+  color: #89b4fa;
+}
+
+.output-title {
+  color: #cdd6f4;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.output-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #313244;
+  color: #cdd6f4;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copy-button:hover {
+  background-color: #45475a;
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+}
+
+.run-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #89b4fa;
+  color: #1e1e2e;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.run-button:hover {
+  background-color: #b4befe;
+}
+
+.run-button:disabled {
+  background-color: #45475a;
+  color: #cdd6f4;
+  cursor: not-allowed;
+}
+
+.output-area {
+  flex: 1;
+  background-color: #11111b;
+  overflow: auto;
+}
+
+.output-content {
+  padding: 16px;
+  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
+  color: #cdd6f4;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Custom scrollbar styles for output area */
+.output-area::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+  display: block;
+}
+
+.output-area::-webkit-scrollbar-track {
+  background: #1e1e2e;
+  cursor: pointer;
+}
+
+.output-area::-webkit-scrollbar-thumb {
+  background: #89b4fa;
+  border-radius: 4px;
+  border: 2px solid #1e1e2e;
+  min-height: 30px;
+  cursor: pointer;
+}
+
+.output-area::-webkit-scrollbar-thumb:hover {
+  background: #b4befe;
+  cursor: pointer;
+}
+
+.output-area::-webkit-scrollbar-corner {
+  background: #1e1e2e;
+}
+
+/* Firefox scrollbar support */
+.output-area {
+  scrollbar-width: auto;
+  scrollbar-color: #89b4fa #1e1e2e;
+}
+
+.code-skeleton {
+  height: 100px;
+  background: linear-gradient(90deg, #313244 25%, #45475a 37%, #313244 63%);
+  background-size: 400% 100%;
+  animation: pulse 2s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.error-message {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background-color: rgba(243, 139, 168, 0.05);
+  border-radius: 4px;
+  border-left: 2px solid rgba(243, 139, 168, 0.5);
+}
+
+.error-message .icon {
+  color: #f38ba8;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.error-details {
+  flex: 1;
+}
+
+.error-title {
+  color: #f38ba8;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.error-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: rgba(243, 139, 168, 0.8);
+  margin: 0;
+}
+
+.success-message {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background-color: rgba(166, 227, 161, 0.05);
+  border-radius: 4px;
+  border-left: 2px solid rgba(166, 227, 161, 0.5);
+}
+
+.success-message .icon {
+  color: #a6e3a1;
+  width: 18px;
+  height: 18px;
+}
+
+.success-title {
+  color: #a6e3a1;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.output-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #cdd6f4;
+  margin: 0;
+}
+
+.idle-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px;
+  text-align: center;
+  color: #6c7086;
+  height: 100%;
+}
+
+.idle-message .icon {
+  width: 32px;
+  height: 32px;
+  color: #89b4fa;
+}
+
+.idle-message p {
+  margin: 0;
+}
+
+/* Animation for the skeleton */
+@keyframes pulse {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.output-area-wrapper {
+  flex: 1;
+  overflow: hidden;
+  background-color: #11111b;
+}
+
+.output-content {
+  padding: 16px;
+  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
+  color: #cdd6f4;
+  font-size: 13px;
+  line-height: 1.5;
 } 
