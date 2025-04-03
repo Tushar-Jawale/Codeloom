@@ -200,4 +200,44 @@
 
 .code-textarea::-webkit-scrollbar-corner {
   background: #21252b;
+}
+
+.action-button {
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 80px;
+  text-align: center;
+}
+
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+.action-button:active {
+  transform: translateY(0);
+}
+
+/* Copy button style */
+.action-button:first-of-type {
+  background: linear-gradient(to right, #10b981, #059669);
+}
+
+.action-button:first-of-type:hover {
+  opacity: 0.9;
+}
+
+/* Reset button style */
+.action-button:last-of-type {
+  background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.action-button:last-of-type:hover {
+  opacity: 0.9;
 } 

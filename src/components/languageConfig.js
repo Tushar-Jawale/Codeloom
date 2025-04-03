@@ -1,5 +1,3 @@
-
-
 const LANGUAGE_CONFIG = {
   javascript: {
     id: "javascript",
@@ -7,7 +5,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/javascript.png",
     pistonRuntime: { language: "javascript", version: "18.15.0" },
     monacoLanguage: "javascript",
-    defaultCode: "write your JavaScript here",
+    defaultCode: "// Write your JavaScript code here",
   },
   typescript: {
     id: "typescript",
@@ -15,7 +13,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/typescript.png",
     pistonRuntime: { language: "typescript", version: "5.0.3" },
     monacoLanguage: "typescript",
-    defaultCode: "write your TypeScript here",
+    defaultCode: "// Write your TypeScript code here",
   },
   python: {
     id: "python",
@@ -23,7 +21,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/python.png",
     pistonRuntime: { language: "python", version: "3.10.0" },
     monacoLanguage: "python",
-    defaultCode: "write your Python here",
+    defaultCode: "# Write your Python code here",
   },
   java: {
     id: "java",
@@ -31,7 +29,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/java.png",
     pistonRuntime: { language: "java", version: "15.0.2" },
     monacoLanguage: "java",
-    defaultCode: "write your Java here",
+    defaultCode: "// Write your Java code here",
   },
   go: {
     id: "go",
@@ -39,7 +37,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/go.png",
     pistonRuntime: { language: "go", version: "1.16.2" },
     monacoLanguage: "go",
-    defaultCode: "write your Go here",
+    defaultCode: "// Write your Go code here",
   },
   rust: {
     id: "rust",
@@ -47,7 +45,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/rust.png",
     pistonRuntime: { language: "rust", version: "1.68.2" },
     monacoLanguage: "rust",
-    defaultCode: "write your Rust here",
+    defaultCode: "// Write your Rust code here",
   },
   cpp: {
     id: "cpp",
@@ -55,7 +53,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/cpp.png",
     pistonRuntime: { language: "cpp", version: "10.2.0" },
     monacoLanguage: "cpp",
-    defaultCode: "write your C++ here",
+    defaultCode: "// Write your C++ code here",
   },
   csharp: {
     id: "csharp",
@@ -63,7 +61,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/csharp.png",
     pistonRuntime: { language: "csharp", version: "6.12.0" },
     monacoLanguage: "csharp",
-    defaultCode: "write your C# here",
+    defaultCode: "// Write your C# code here",
   },
   ruby: {
     id: "ruby",
@@ -71,7 +69,7 @@ const LANGUAGE_CONFIG = {
     logoPath: "/ruby.png",
     pistonRuntime: { language: "ruby", version: "3.0.1" },
     monacoLanguage: "ruby",
-    defaultCode: "write your Ruby here",
+    defaultCode: "# Write your Ruby code here",
   },
   swift: {
     id: "swift",
@@ -79,9 +77,8 @@ const LANGUAGE_CONFIG = {
     logoPath: "/swift.png",
     pistonRuntime: { language: "swift", version: "5.3.3" },
     monacoLanguage: "swift",
-    defaultCode: "write your Swift here",
+    defaultCode: "// Write your Swift code here",
   },
 };
-
 
 export default LANGUAGE_CONFIG;

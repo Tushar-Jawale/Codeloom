@@ -1,39 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import LANGUAGE_CONFIG from './languageConfig';
 import OutputPanel from '../pages/OutputPanel';
-import { getLanguageIcon } from '../services/pistonService';
+import { CodeEditorService, getLanguageIcon } from '../services/CodeEdtiorService';
 import './Editor.css';
 
 const Editor = () => {
-  const [language, setLanguage] = useState('javascript');
-  const [code, setCode] = useState(LANGUAGE_CONFIG[language].defaultCode);
+  const { 
+    language, 
+    setLanguage, 
+    code, 
+    fontSize, 
+    setFontSize, 
+    setEditor, 
+    handleChange, 
+    handleRefresh
+  } = CodeEditorService();
+  
   const [lines, setLines] = useState(['1']);
-  const [fontSize, setFontSize] = useState(() => {
-    const saved = localStorage.getItem('editor-font-size');
-    return saved ? parseInt(saved) : 14;
-  });
+  const [isCopied, setIsCopied] = useState(false);
   const textareaRef = useRef(null);
   const lineNumbersRef = useRef(null);
 
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.fontSize = `${fontSize}px`;
+      setEditor(textareaRef.current);
     }
     if (lineNumbersRef.current) {
       lineNumbersRef.current.style.fontSize = `${fontSize}px`;
     }
-  }, [fontSize]);
+  }, [fontSize, setEditor]);
 
   useEffect(() => {
-    const savedCode = localStorage.getItem(`editor-code-${language}`);
-    if (savedCode) {
-      setCode(savedCode);
-    } else {
-      setCode(LANGUAGE_CONFIG[language].defaultCode);
-    }
-  }, [language]);
-
-  useEffect(() => {
+    // Calculate line numbers when code changes
     const lineCount = code.split('\n').length;
     const newLines = Array.from({ length: lineCount }, (_, i) => (i + 1).toString());
     setLines(newLines);
@@ -45,11 +44,6 @@ const Editor = () => {
     }
   };
 
-  const handleChange = (e) => {
-    setCode(e.target.value);
-    localStorage.setItem(`editor-code-${language}`, e.target.value);
-  };
-
   const handleTab = (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -57,7 +51,7 @@ const Editor = () => {
       const end = e.target.selectionEnd;
       
       const newText = code.substring(0, start) + '  ' + code.substring(end);
-      setCode(newText);
+      handleChange({ target: { value: newText } });
       
       setTimeout(() => {
         textareaRef.current.selectionStart = start + 2;
@@ -69,18 +63,23 @@ const Editor = () => {
   const increaseFontSize = () => {
     const newSize = Math.min(fontSize + 1, 24);
     setFontSize(newSize);
-    localStorage.setItem('editor-font-size', newSize.toString());
   };
 
   const decreaseFontSize = () => {
     const newSize = Math.max(fontSize - 1, 12);
     setFontSize(newSize);
-    localStorage.setItem('editor-font-size', newSize.toString());
   };
 
-  const handleRefresh = () => {
-    setCode(LANGUAGE_CONFIG[language].defaultCode);
-    localStorage.removeItem(`editor-code-${language}`);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 1500);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
   };
 
   return (
@@ -108,7 +107,10 @@ const Editor = () => {
               <span className="font-size-value">{fontSize}px</span>
               <button onClick={increaseFontSize} className="font-size-button">+</button>
             </div>
-            <button onClick={handleRefresh} className="refresh-button">
+            <button onClick={handleCopy} className="action-button">
+              {isCopied ? 'Copied!' : 'Copy'}
+            </button>
+            <button onClick={handleRefresh} className="action-button">
               Reset
             </button>
           </div>
@@ -116,7 +118,7 @@ const Editor = () => {
 
         <div className="editor-container">
           <div ref={lineNumbersRef} className="line-numbers">
-            {lines.map((line, index) => (
+            {lines && lines.map((line, index) => (
               <div key={index} className="line-number">{line}</div>
             ))}
           </div>
@@ -138,7 +140,7 @@ const Editor = () => {
       
       <div className="output-wrapper">
         <div className="output-panel-container">
-          <OutputPanel code={code} language={language} />
+          <OutputPanel />
         </div>
       </div>
     </div>

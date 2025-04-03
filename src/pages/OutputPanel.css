@@ -72,22 +72,6 @@
   cursor: pointer;
 }
 
-.copy-button {
-  background-color: #313244;
-  color: #cdd6f4;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.copy-button:hover {
-  background-color: #45475a;
-}
-
 .output-content {
   flex: 1;
   padding: 16px;
@@ -169,10 +153,10 @@
 /* Animation for the skeleton */
 @keyframes pulse {
   0%, 100% {
-    opacity: 0.5;
+    background-position: 0% 50%;
   }
   50% {
-    opacity: 0.8;
+    background-position: 100% 50%;
   }
 }
 
@@ -235,59 +219,15 @@
   gap: 8px;
 }
 
-.copy-button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #313244;
-  color: #cdd6f4;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.copy-button:hover {
-  background-color: #45475a;
-}
-
 .icon {
   width: 14px;
   height: 14px;
 }
 
-.run-button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background-color: #89b4fa;
-  color: #1e1e2e;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.run-button:hover {
-  background-color: #b4befe;
-}
-
-.run-button:disabled {
-  background-color: #45475a;
-  color: #cdd6f4;
-  cursor: not-allowed;
-}
-
 .output-area {
   flex: 1;
-  background-color: #11111b;
   overflow: auto;
+  background-color: #11111b;
 }
 
 .output-content {
@@ -321,10 +261,6 @@
 .output-area::-webkit-scrollbar-thumb:hover {
   background: #b4befe;
   cursor: pointer;
-}
-
-.output-area::-webkit-scrollbar-corner {
-  background: #1e1e2e;
 }
 
 /* Firefox scrollbar support */
@@ -425,16 +361,6 @@
 
 .idle-message p {
   margin: 0;
-}
-
-/* Animation for the skeleton */
-@keyframes pulse {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 .output-area-wrapper {

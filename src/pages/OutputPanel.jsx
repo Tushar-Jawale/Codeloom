@@ -1,21 +1,12 @@
 import { CodeEditorService } from "../services/CodeEdtiorService";
-import { AlertTriangle, CheckCircle, Clock, Copy, Terminal } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, CheckCircle, Clock, Terminal } from "lucide-react";
 import "./OutputPanel.css";
 import RunButton from "../components/RunButton";
 
 function OutputPanel() {
-  const { output, error, isRunning } = CodeEditorService();
-  const [isCopied, setIsCopied] = useState(false);
+  const { output, error, isRunning, executionResult } = CodeEditorService();
 
   const hasContent = error || output;
-
-  const handleCopy = async () => {
-    if (!hasContent) return;
-    await navigator.clipboard.writeText(error || output);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
-  };
 
   return (
     <div className="output-panel-container">
@@ -28,21 +19,6 @@ function OutputPanel() {
         </div>
 
         <div className="output-panel-actions">
-          {hasContent && (
-            <button onClick={handleCopy} className="copy-button">
-              {isCopied ? (
-                <>
-                  <CheckCircle className="icon" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="icon" />
-                  Copy
-                </>
-              )}
-            </button>
-          )}
           <RunButton />
         </div>
       </div>
