@@ -1,80 +1,84 @@
-// Language configurations for the code editor
 const LANGUAGE_CONFIG = {
   javascript: {
-    name: 'JavaScript',
-    defaultCode: '// Write your JavaScript code here',
-    icon: '📜'
+    id: "javascript",
+    label: "JavaScript",
+    logoPath: "/javascript.png",
+    pistonRuntime: { language: "javascript", version: "18.15.0" },
+    monacoLanguage: "javascript",
+    defaultCode: "// Write your JavaScript code here",
   },
   typescript: {
-    name: 'TypeScript',
-    defaultCode: '// Write your TypeScript code here',
-    icon: '📘'
+    id: "typescript",
+    label: "TypeScript",
+    logoPath: "/typescript.png",
+    pistonRuntime: { language: "typescript", version: "5.0.3" },
+    monacoLanguage: "typescript",
+    defaultCode: "// Write your TypeScript code here",
   },
   python: {
-    name: 'Python',
-    defaultCode: '# Write your Python code here',
-    icon: '🐍'
+    id: "python",
+    label: "Python",
+    logoPath: "/python.png",
+    pistonRuntime: { language: "python", version: "3.10.0" },
+    monacoLanguage: "python",
+    defaultCode: "# Write your Python code here",
   },
   java: {
-    name: 'Java',
-    defaultCode: '// Write your Java code here',
-    icon: '☕'
-  },
-  c: {
-    name: 'C',
-    defaultCode: '// Write your C code here',
-    icon: '📊'
-  },
-  csharp: {
-    name: 'C#',
-    defaultCode: '// Write your C# code here',
-    icon: '🔷'
-  },
-  cpp: {
-    name: 'C++',
-    defaultCode: '// Write your C++ code here',
-    icon: '🔨'
-  },
-  php: {
-    name: 'PHP',
-    defaultCode: '<?php\n// Write your PHP code here\n?>',
-    icon: '🐘'
-  },
-  ruby: {
-    name: 'Ruby',
-    defaultCode: '# Write your Ruby code here',
-    icon: '💎'
-  },
-  swift: {
-    name: 'Swift',
-    defaultCode: '// Write your Swift code here',
-    icon: '🦅'
+    id: "java",
+    label: "Java",
+    logoPath: "/java.png",
+    pistonRuntime: { language: "java", version: "15.0.2" },
+    monacoLanguage: "java",
+    defaultCode: "// Write your Java code here",
   },
   go: {
-    name: 'Go',
-    defaultCode: '// Write your Go code here',
-    icon: '🐹'
+    id: "go",
+    label: "Go",
+    logoPath: "/go.png",
+    pistonRuntime: { language: "go", version: "1.16.2" },
+    monacoLanguage: "go",
+    defaultCode: "// Write your Go code here",
   },
   rust: {
-    name: 'Rust',
-    defaultCode: '// Write your Rust code here',
-    icon: '🦀'
+    id: "rust",
+    label: "Rust",
+    logoPath: "/rust.png",
+    pistonRuntime: { language: "rust", version: "1.68.2" },
+    monacoLanguage: "rust",
+    defaultCode: "// Write your Rust code here",
   },
-  html: {
-    name: 'HTML',
-    defaultCode: '<!-- Write your HTML code here -->',
-    icon: '🌐'
+  cpp: {
+    id: "cpp",
+    label: "C++",
+    logoPath: "/cpp.png",
+    pistonRuntime: { language: "cpp", version: "10.2.0" },
+    monacoLanguage: "cpp",
+    defaultCode: "// Write your C++ code here",
   },
-  css: {
-    name: 'CSS',
-    defaultCode: '/* Write your CSS code here */',
-    icon: '🎨'
+  csharp: {
+    id: "csharp",
+    label: "C#",
+    logoPath: "/csharp.png",
+    pistonRuntime: { language: "csharp", version: "6.12.0" },
+    monacoLanguage: "csharp",
+    defaultCode: "// Write your C# code here",
   },
-  sql: {
-    name: 'SQL',
-    defaultCode: '-- Write your SQL code here',
-    icon: '🗃️'
-  }
+  ruby: {
+    id: "ruby",
+    label: "Ruby",
+    logoPath: "/ruby.png",
+    pistonRuntime: { language: "ruby", version: "3.0.1" },
+    monacoLanguage: "ruby",
+    defaultCode: "# Write your Ruby code here",
+  },
+  swift: {
+    id: "swift",
+    label: "Swift",
+    logoPath: "/swift.png",
+    pistonRuntime: { language: "swift", version: "5.3.3" },
+    monacoLanguage: "swift",
+    defaultCode: "// Write your Swift code here",
+  },
 };
 
-export default LANGUAGE_CONFIG; 
+export default LANGUAGE_CONFIG;
