@@ -16,7 +16,6 @@ function RunButton() {
       return;
     }
     
-    // Run the code using the service
     await runCode(convex);
   };
 

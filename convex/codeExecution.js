@@ -54,8 +54,6 @@ export const getRoomStats = query({
       .withIndex("by_room_id")
       .filter((q) => q.eq(q.field("roomId"), args.roomId))
       .collect();
-
-    // Calculate execution stats
     const last24Hours = executions.filter(
       (e) => e.timestamp > Date.now() - 24 * 60 * 60 * 1000
     ).length;
@@ -73,7 +71,6 @@ export const getRoomStats = query({
       ? languages.reduce((a, b) => (languageStats[a] > languageStats[b] ? a : b))
       : "N/A";
 
-    // Get unique users
     const uniqueUsers = new Set(executions.map(e => e.username)).size;
 
     return {

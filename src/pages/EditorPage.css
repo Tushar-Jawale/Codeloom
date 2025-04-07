@@ -41,6 +41,13 @@
   width: 100%;
   margin-top: 20px;
 }
+.copyBtn{
+  width: 100%;
+  margin-top: 20px;
+}
+.copyBtn:hover{
+  background-color: #868689;
+}
 
 .editorWrapper {
   width: 100%;
@@ -48,8 +55,6 @@
   overflow: hidden;
   position: relative;
 }
-
-/* Ensure the editor takes full height */
 .editorWrapper > div {
   height: 100%;
   width: 100%;

@@ -12,7 +12,6 @@ const Home = () => {
   const { setRoomId: storeRoomId, setUsername: storeUsername } = CodeEditorService();
 
   useEffect(() => {
-    // Clear previous session data when returning to home page
     storeRoomId('');
     storeUsername('');
   }, [storeRoomId, storeUsername]);

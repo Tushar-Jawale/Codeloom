@@ -32,7 +32,6 @@ const Editor = () => {
   }, [fontSize, setEditor]);
 
   useEffect(() => {
-    // Calculate line numbers when code changes
     const lineCount = code.split('\n').length;
     const newLines = Array.from({ length: lineCount }, (_, i) => (i + 1).toString());
     setLines(newLines);
@@ -86,19 +85,21 @@ const Editor = () => {
     <div className="editor-container-with-output">
       <div className="editor-wrapper">
         <div className="editor-header">
-          <div className="language-selector">
-            <div className="language-icon">{getLanguageIcon(language)}</div>
-            <select 
-              value={language} 
-              onChange={(e) => setLanguage(e.target.value)}
-              className="language-select"
-            >
-              {Object.entries(LANGUAGE_CONFIG).map(([key, config]) => (
-                <option key={key} value={key}>
-                  {config.label}
-                </option>
-              ))}
-            </select>
+          <div className="left-controls">
+            <div className="language-selector">
+              <div className="language-icon">{getLanguageIcon(language)}</div>
+              <select 
+                value={language} 
+                onChange={(e) => setLanguage(e.target.value)}
+                className="language-select"
+              >
+                {Object.entries(LANGUAGE_CONFIG).map(([key, config]) => (
+                  <option key={key} value={key}>
+                    {config.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="editor-controls">
             <div className="font-size-control">
@@ -115,7 +116,7 @@ const Editor = () => {
             </button>
           </div>
         </div>
-
+                
         <div className="editor-container">
           <div ref={lineNumbersRef} className="line-numbers">
             {lines && lines.map((line, index) => (

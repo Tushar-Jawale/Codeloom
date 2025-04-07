@@ -23,8 +23,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background-color: #1e1e2e;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #1c1e29;
+  border-bottom: 1px solid #2e2f3a;
+}
+
+.left-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .language-selector {
@@ -224,7 +230,6 @@
   transform: translateY(0);
 }
 
-/* Copy button style */
 .action-button:first-of-type {
   background: linear-gradient(to right, #10b981, #059669);
 }
@@ -233,7 +238,6 @@
   opacity: 0.9;
 }
 
-/* Reset button style */
 .action-button:last-of-type {
   background: linear-gradient(to right, #ef4444, #dc2626);
 }

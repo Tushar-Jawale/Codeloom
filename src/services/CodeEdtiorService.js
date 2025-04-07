@@ -1,8 +1,7 @@
 import LANGUAGE_CONFIG from "../components/languageConfig"
 import { create } from "zustand";
-import { saveCodeExecution } from "./convexService";
+import { getConvexClient, saveCodeExecution } from "./convexService";
 
-// Language icon mapping 
 export const getLanguageIcon = (language) => {
   const icons = {
     javascript: '📜',
@@ -29,7 +28,6 @@ const getInitialState = () => {
     return {
       language: "javascript",
       fontSize: 16,
-      theme: "vs-dark",
       roomId: "",
       username: "",
       code: LANGUAGE_CONFIG["javascript"].defaultCode,
@@ -38,7 +36,6 @@ const getInitialState = () => {
 
   const savedLanguage = localStorage.getItem("editor-language") || "javascript";
   const savedFontSize = localStorage.getItem("editor-font-size") || 16;
-  const savedTheme = localStorage.getItem("editor-theme") || "vs-dark";
   const savedRoomId = localStorage.getItem("room-id") || "";
   const savedUsername = localStorage.getItem("username") || "";
   const savedCode = localStorage.getItem(`editor-code-${savedLanguage}`);
@@ -46,7 +43,6 @@ const getInitialState = () => {
   return {
     language: savedLanguage,
     fontSize: Number(savedFontSize),
-    theme: savedTheme,
     roomId: savedRoomId,
     username: savedUsername,
     code: savedCode || LANGUAGE_CONFIG[savedLanguage].defaultCode,
@@ -63,6 +59,7 @@ export const CodeEditorService = create((set, get) => {
     error: null,
     editor: null,
     executionResult: null,
+    input: "",
 
     getCode: () => {
       const editor = get().editor;
@@ -81,6 +78,10 @@ export const CodeEditorService = create((set, get) => {
       return get().code;
     },
 
+    setInput: (input) => {
+      set({ input });
+    },
+
     setEditor: (editor) => {
       const savedCode = localStorage.getItem(`editor-code-${get().language}`);
       if (savedCode) {
@@ -95,11 +96,6 @@ export const CodeEditorService = create((set, get) => {
       }
       
       set({ editor });
-    },
-
-    setTheme: (theme) => {
-      localStorage.setItem("editor-theme", theme);
-      set({ theme });
     },
 
     setFontSize: (fontSize) => {
@@ -167,7 +163,7 @@ export const CodeEditorService = create((set, get) => {
     },
 
     runCode: async (convex) => {
-      const { language, code, roomId, username } = get();
+      const { language, code, roomId, username, input } = get();
       const codeToRun = get().getCode();
 
       if (!codeToRun) {
@@ -209,6 +205,7 @@ export const CodeEditorService = create((set, get) => {
             language: runtime.language,
             version: runtime.version,
             files: [{ content: codeToRun }],
+            stdin: input,
           }),
         });
 
@@ -254,9 +251,12 @@ export const CodeEditorService = create((set, get) => {
 
         // handle compilation errors
         if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
-          const result = { code: codeToRun, output: "", error };
-          set({ error, executionResult: result });
+          const errorMsg = data.compile.stderr || data.compile.output;
+          const result = { code: codeToRun, output: "", error: errorMsg };
+          set({
+            error: errorMsg,
+            executionResult: result,
+          });
           
           // Save to Convex
           try {
@@ -273,9 +273,12 @@ export const CodeEditorService = create((set, get) => {
         }
 
         if (data.run && data.run.code !== 0) {
-          const error = data.run.stderr || data.run.output;
-          const result = { code: codeToRun, output: "", error };
-          set({ error, executionResult: result });
+          const errorMsg = data.run.stderr || data.run.output;
+          const result = { code: codeToRun, output: "", error: errorMsg };
+          set({
+            error: errorMsg,
+            executionResult: result,
+          });
           
           // Save to Convex
           try {
@@ -300,8 +303,8 @@ export const CodeEditorService = create((set, get) => {
           error: null,
           executionResult: result,
         });
-
-        // Save to Convex
+        
+        // Save successful execution to Convex
         try {
           await saveCodeExecution(convex, {
             roomId,
@@ -314,8 +317,13 @@ export const CodeEditorService = create((set, get) => {
         }
       } catch (error) {
         console.error("Error running code:", error);
-        const result = { code: codeToRun, output: "", error: "Error running code" };
-        set({ error: "Error running code", executionResult: result });
+        const errorMsg = "Error running code";
+        const result = { code: codeToRun, output: "", error: errorMsg };
+        
+        set({
+          error: errorMsg,
+          executionResult: result,
+        });
         
         // Save to Convex
         try {

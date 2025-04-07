@@ -15,7 +15,6 @@ const EditorPage = () => {
   const [connectedUsers, setConnectedUsers] = useState([]);
   const { copy } = useClipboard();
 
-  // Get roomId from URL parameter (note: the URL param is RoomId, but we use roomId in our Convex functions)
   const roomId = params.RoomId;
   const username = location.state?.username;
 
@@ -28,14 +27,11 @@ const EditorPage = () => {
 
     console.log('Setting room data:', { roomId, username });
 
-    // Set the room ID and username in the CodeEditorService
     setRoomId(roomId);
     setUsername(username);
 
-    // Add the current user to the connected users list
     setConnectedUsers([{ socketId: 'self', username }]);
 
-    // This will be expanded when you implement Socket.io for real-time collaboration
   }, [roomId, username, navigate, setRoomId, setUsername]);
 
   const copyRoomId = async () => {
