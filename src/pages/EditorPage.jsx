@@ -11,7 +11,7 @@ const EditorPage = () => {
   const params = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { setRoomId, setUsername } = CodeEditorService();
+  const { setRoomId, setUsername, theme } = CodeEditorService();
   const [connectedUsers, setConnectedUsers] = useState([]);
   const { copy } = useClipboard();
 
@@ -31,7 +31,6 @@ const EditorPage = () => {
     setUsername(username);
 
     setConnectedUsers([{ socketId: 'self', username }]);
-
   }, [roomId, username, navigate, setRoomId, setUsername]);
 
   const copyRoomId = async () => {
@@ -44,7 +43,7 @@ const EditorPage = () => {
   };
 
   return (
-    <div className='editorPage'>
+    <div className='editorPage' data-theme={theme}>
         <div className='aside'>
           <div className='asideInnerContainer'>
             <div className='logoContainer'>

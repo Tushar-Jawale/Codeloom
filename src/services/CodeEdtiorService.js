@@ -211,6 +211,7 @@ export const CodeEditorService = create((set, get) => {
             version: runtime.version,
             files: [{ content: codeToRun }],
             stdin: input,
+            run_timeout: 10000,
           }),
         });
 
@@ -350,6 +351,10 @@ export const CodeEditorService = create((set, get) => {
       } finally {
         set({ isRunning: false });
       }
+    },
+
+    clearOutput: () => {
+      set({ output: "", error: null, executionResult: null });
     },
   };
 });

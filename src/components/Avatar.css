@@ -3,6 +3,15 @@
     align-items: center;
 }
 
+:root {
+    --avatar-border: #4aed88;
+}
+
+.editorPage[data-theme="vs-light"] .avatar-wrapper img {
+    border: 2px solid #0078d4;
+}
+
 .avatar-wrapper img {
     border: 2px solid #4aed88;
+    transition: border-color 0.3s ease;
 } 

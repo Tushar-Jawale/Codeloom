@@ -1,8 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import {LANGUAGE_CONFIG, defineMonacoThemes, THEMES, THEME_DEFINITIONS} from './languageConfig';
 import OutputPanel from '../pages/OutputPanel';
+import { LuMoon } from "react-icons/lu";
+import { MdOutlineWbSunny } from "react-icons/md";
 import { CodeEditorService, getLanguageIcon } from '../services/CodeEdtiorService';
 import { Editor as MonacoEditor } from '@monaco-editor/react';
+import RunButton from './RunButton';
 import './Editor.css';
 
 const Editor = () => {
@@ -19,14 +22,11 @@ const Editor = () => {
     handleRefresh
   } = CodeEditorService();
   
-  const [lines, setLines] = useState(['1']);
   const [isCopied, setIsCopied] = useState(false);
-  const [showThemeDropdown, setShowThemeDropdown] = useState(false);
   const monacoEditorRef = useRef(null);
   const monacoInstanceRef = useRef(null);
-  const lineNumbersRef = useRef(null);
-  const themeDropdownRef = useRef(null);
   const editorWrapperRef = useRef(null);
+  const editorContainerRef = useRef(null);
 
   const handleEditorDidMount = (editor, monaco) => {
     monacoEditorRef.current = editor;
@@ -45,8 +45,12 @@ const Editor = () => {
     });
   };
 
-  // Apply theme changes to Monaco
+  // Apply theme changes to Monaco and entire component
   useEffect(() => {
+    // Apply theme to document root first (for all CSS variables)
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Apply theme to Monaco editor
     if (monacoInstanceRef.current) {
       monacoInstanceRef.current.editor.setTheme(theme);
       
@@ -58,67 +62,78 @@ const Editor = () => {
         }
       }
     }
+    
+    // Apply theme to the entire container
+    if (editorContainerRef.current) {
+      editorContainerRef.current.setAttribute('data-theme', theme);
+    }
+    
+    // Apply theme to document for broader application
+    document.documentElement.setAttribute('data-editor-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    
+    // Update UI colors based on theme
+    const currentThemeObj = THEMES.find(t => t.id === theme) || THEMES[0];
+    const isDark = theme !== 'vs-light';
+    
+    // Update inner elements directly to force style refresh
+    const updateElements = (selector, themeAttribute) => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(el => {
+        el.setAttribute('data-theme', themeAttribute);
+      });
+    };
+    
+    // Update all themed elements
+    updateElements('.output-panel-container', theme);
+    updateElements('.input-panel', theme);
+    updateElements('.output-panel-right', theme);
+    updateElements('.output-area', theme);
+    updateElements('.input-textarea', theme);
+    
+    console.log('Applied theme to root and all elements:', theme);
+    
   }, [theme]);
 
   useEffect(() => {
     if (monacoEditorRef.current) {
       monacoEditorRef.current.updateOptions({ fontSize });
     }
-    
-    if (lineNumbersRef.current) {
-      lineNumbersRef.current.style.fontSize = `${fontSize}px`;
-    }
   }, [fontSize]);
 
-  // Update line numbers when code changes
-  useEffect(() => {
-    const lineCount = code.split('\n').length;
-    const newLines = Array.from({ length: lineCount }, (_, i) => (i + 1).toString());
-    setLines(newLines);
-  }, [code]);
-  
-  // Sync scroll position between editor and line numbers
-  useEffect(() => {
-    const syncLineNumbersScroll = () => {
-      if (!monacoEditorRef.current || !lineNumbersRef.current) return;
-      
-      const editorDomNode = monacoEditorRef.current.getDomNode();
-      if (!editorDomNode) return;
-      
-      const scrollableElement = editorDomNode.querySelector('.monaco-scrollable-element');
-      if (!scrollableElement) return;
-      
-      const handleEditorScroll = () => {
-        if (lineNumbersRef.current) {
-          lineNumbersRef.current.scrollTop = scrollableElement.scrollTop;
-        }
-      };
-      
-      scrollableElement.addEventListener('scroll', handleEditorScroll);
-      return () => {
-        scrollableElement.removeEventListener('scroll', handleEditorScroll);
-      };
-    };
+  const toggleTheme = () => {
+    const newTheme = theme === 'vs-dark' ? 'vs-light' : 'vs-dark';
+    setTheme(newTheme);
     
-    // Run the sync function when the editor reference is set
-    const cleanup = syncLineNumbersScroll();
-    return () => {
-      if (cleanup) cleanup();
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target)) {
-        setShowThemeDropdown(false);
+    // Force theme update through a delayed call
+    setTimeout(() => {
+      console.log('Forcing theme update:', newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+      document.body.setAttribute('data-theme', newTheme);
+      
+      // Force update on all theme-sensitive elements
+      const updateElements = (selector, themeAttribute) => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          el.setAttribute('data-theme', themeAttribute);
+        });
+      };
+      
+      updateElements('.output-panel-container', newTheme);
+      updateElements('.input-panel', newTheme);
+      updateElements('.output-panel-right', newTheme);
+      updateElements('.output-area', newTheme);
+      updateElements('.input-textarea', newTheme);
+      
+      // For any stubborn elements, try forcing a repaint
+      const outputPanel = document.querySelector('.output-panel-container');
+      if (outputPanel) {
+        outputPanel.style.display = 'none';
+        outputPanel.offsetHeight; // Force repaint
+        outputPanel.style.display = 'flex';
       }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    }, 50);
+  };
 
   const handleEditorChange = (value) => {
     handleChange({ target: { value } });
@@ -148,9 +163,10 @@ const Editor = () => {
 
   const currentTheme = THEMES.find(t => t.id === theme) || THEMES[0];
   const monacoLanguage = LANGUAGE_CONFIG[language]?.monacoLanguage || language;
+  const isDarkTheme = theme === 'vs-dark';
 
   return (
-    <div className="editor-container-with-output">
+    <div className="editor-container-with-output" ref={editorContainerRef} data-theme={theme}>
       <div className="editor-wrapper">
         <div className="editor-header">
           <div className="left-controls">
@@ -169,45 +185,24 @@ const Editor = () => {
               </select>
             </div>
             
-            {/* Enhanced theme selector */}
-            <div className="theme-selector" ref={themeDropdownRef}>
-              <button 
-                className="theme-select-button"
-                onClick={() => setShowThemeDropdown(!showThemeDropdown)}
-                title="Change editor theme"
-              >
-                <div 
-                  className="theme-color-indicator" 
-                  style={{ backgroundColor: currentTheme.color }}
-                />
-                <span>{currentTheme.label}</span>
-                <svg className={`dropdown-arrow ${showThemeDropdown ? 'open' : ''}`} width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              
-              {showThemeDropdown && (
-                <div className="theme-dropdown-menu">
-                  {THEMES.map(t => (
-                    <div 
-                      key={t.id} 
-                      className={`theme-option ${theme === t.id ? 'active' : ''}`}
-                      onClick={() => {
-                        setTheme(t.id);
-                        setShowThemeDropdown(false);
-                      }}
-                    >
-                      <div 
-                        className="theme-color-preview" 
-                        style={{ backgroundColor: t.color }}
-                      />
-                      <span>{t.label}</span>
-                    </div>
-                  ))}
-                </div>
+            {/* Theme toggle button */}
+            <button 
+              className="theme-toggle-button"
+              onClick={toggleTheme}
+              title={isDarkTheme ? "Switch to light theme" : "Switch to dark theme"}
+            >
+              {isDarkTheme ? (
+                <MdOutlineWbSunny />
+              ) : (
+                <LuMoon />
               )}
-            </div>
+            </button>
           </div>
+          
+          <div className="center-controls">
+            <RunButton />
+          </div>
+          
           <div className="editor-controls">
             <div className="font-size-control">
               <span className="font-label">Font Size:</span>
@@ -225,11 +220,6 @@ const Editor = () => {
         </div>
                 
         <div className="editor-container" ref={editorWrapperRef}>
-          <div className="line-numbers" ref={lineNumbersRef}>
-            {lines.map((num, i) => (
-              <div key={i} className="line-number">{num}</div>
-            ))}
-          </div>
           <div className="monaco-editor-container">
             <MonacoEditor
               height="100%"
@@ -259,13 +249,13 @@ const Editor = () => {
                 formatOnPaste: true,
                 formatOnType: true,
                 wordWrap: 'off',
-                lineNumbers: 'off', // Turn off Monaco's built-in line numbers
+                lineNumbers: 'on',
                 lineNumbersMinChars: 4,
                 glyphMargin: false,
                 folding: true,
                 renderLineHighlight: 'line',
                 renderIndentGuides: true,
-                lineDecorationsWidth: 0, // Reduce space for line decorations since we have our own line numbers
+                lineDecorationsWidth: 10,
                 fixedOverflowWidgets: true,
                 guides: {
                   indentation: true,
@@ -283,7 +273,7 @@ const Editor = () => {
       </div>
       
       <div className="output-wrapper">
-        <div className="output-panel-container">
+        <div className="output-panel-container" data-theme={theme}>
           <OutputPanel />
         </div>
       </div>

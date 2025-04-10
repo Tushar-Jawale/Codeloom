@@ -1,14 +1,16 @@
 import { CodeEditorService } from "../services/CodeEdtiorService";
-import { AlertTriangle, CheckCircle, Clock, Terminal, Type } from "lucide-react";
+import { AlertTriangle, Clock, Terminal, Type, X } from "lucide-react";
 import "./OutputPanel.css";
-import RunButton from "../components/RunButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function OutputPanel() {
-  const { output, error, isRunning, executionResult, setInput } = CodeEditorService();
+  const { output, error, isRunning, executionResult, setInput, theme, clearOutput } = CodeEditorService();
   const [inputText, setInputText] = useState("");
 
-  const hasContent = error || output;
+  // Log theme changes
+  useEffect(() => {
+    console.log("Theme updated in OutputPanel:", theme);
+  }, [theme]);
 
   const formatOutput = (text) => {
     if (!text) return "";
@@ -24,46 +26,43 @@ function OutputPanel() {
     setInputText(value);
     setInput(value); 
   };
+  
+  const handleClearInput = () => {
+    setInputText("");
+    setInput("");
+  };
+  
+  const handleClearOutput = () => {
+    if (clearOutput) {
+      clearOutput();
+    }
+  };
 
   return (
-    <div className="output-panel-container">
-      <div className="output-panel-header">
-        <div className="output-panel-title">
-          <div className="output-icon-container">
-            <Terminal className="terminal-icon" />
-          </div>
-          <span className="output-title">Output Panel</span>
-        </div>
-
-        <div className="output-panel-actions">
-          <RunButton />
-        </div>
-      </div>
-
+    <div className="output-panel-container" data-theme={theme}>
       <div className="split-panel">
-        <div className="input-panel">
+        <div className="input-panel" data-theme={theme}>
           <div className="input-panel-header">
             <div className="input-panel-title">
-              <Type className="input-icon" />
+              <Type size={16} className="input-icon" />
               <span className="input-title">Input</span>
             </div>
+            
+            <button className="clear-button input-clear-button" onClick={handleClearInput} title="Clear input">
+              Clear
+            </button> 
           </div>
-          <textarea 
-            className="input-textarea" 
-            placeholder="Enter input for your code here..." 
-            value={inputText}
-            onChange={handleInputChange}
-          />
+          <textarea className="input-textarea" placeholder="Enter input for your code here..." value={inputText} onChange={handleInputChange} data-theme={theme} />
         </div>
 
-        <div className="output-panel-right">
+        <div className="output-panel-right" data-theme={theme}>
           <div className="output-panel-right-header">
             <div className="output-panel-right-title">
-              <Terminal className="output-icon" />
+              <Terminal size={16} className="output-icon" />
               <span className="output-title">Output</span>
             </div>
           </div>
-          <div className="output-area">
+          <div className="output-area" data-theme={theme}>
             <div className="output-content">
               {isRunning ? (
                 <div className="code-skeleton">
@@ -80,11 +79,7 @@ function OutputPanel() {
                   </div>
                 </div>
               ) : output ? (
-                <>
-                  <div className="output-container">
-                    <div className="output-text">{formatOutput(output)}</div>
-                  </div>
-                </>
+                <div className="output-text">{formatOutput(output)}</div>
               ) : (
                 <div className="idle-message">
                   <Clock className="icon" />

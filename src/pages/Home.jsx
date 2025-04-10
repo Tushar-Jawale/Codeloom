@@ -9,12 +9,21 @@ const Home = () => {
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState('');
-  const { setRoomId: storeRoomId, setUsername: storeUsername } = CodeEditorService();
+  const { 
+    setRoomId: storeRoomId, 
+    setUsername: storeUsername,
+    theme 
+  } = CodeEditorService();
 
   useEffect(() => {
     storeRoomId('');
     storeUsername('');
   }, [storeRoomId, storeUsername]);
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-editor-theme', theme);
+  }, [theme]);
 
   const createRoom = (e) => {
     e.preventDefault();
@@ -39,7 +48,7 @@ const Home = () => {
   }
 
   return (
-    <div className='HomeWrapper'>
+    <div className='HomeWrapper' data-theme={theme}>
         <div className='FormWrapper'>
           {username && <Avatar username={username} size={50} />}
           <h4 className='mainLabel'>Paste Invitation ROOM ID</h4>
