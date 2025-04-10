@@ -39,6 +39,11 @@
   gap: 8px;
 }
 
+/* Custom styling for the theme selector positioning */
+.left-controls .dropdown-container {
+  margin-left: 16px;
+}
+
 .language-icon {
   font-size: 20px;
 }
@@ -56,6 +61,18 @@
 .language-select:hover {
   border-color: rgba(255, 255, 255, 0.2);
   background-color: #2c3038;
+}
+
+/* Additional styling for GitHub dark theme textarea */
+.code-textarea,
+.code-textarea:focus,
+.code-textarea:hover,
+.code-textarea:active,
+.code-textarea::selection {
+  color: #c9d1d9 !important;
+  -webkit-text-fill-color: #c9d1d9 !important;
+  background-color: #0d1117 !important;
+  caret-color: #c9d1d9 !important;
 }
 
 .editor-controls {
@@ -123,6 +140,7 @@
   display: flex;
   overflow: hidden;
   position: relative;
+  height: 100%;
 }
 
 .line-numbers {
@@ -154,6 +172,7 @@
 .code-textarea {
   flex: 1;
   padding: 15px;
+  padding-bottom: 50px;
   color: #f8f8f2;
   font-size: inherit;
   line-height: 1.5;
@@ -244,4 +263,214 @@
 
 .action-button:last-of-type:hover {
   opacity: 0.9;
+}
+
+/* Enhanced theme selector */
+.theme-selector {
+  position: relative;
+  margin-left: 16px;
+}
+
+.theme-select-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #282c34;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.theme-select-button:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: #2c3038;
+}
+
+.theme-color-indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.theme-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background-color: #21252b;
+  border: 1px solid #3a3f4b;
+  border-radius: 4px;
+  width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  animation: fadeIn 0.2s ease-out;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: #abb2bf;
+}
+
+.theme-option:hover {
+  background-color: #2c313a;
+  color: #fff;
+}
+
+.theme-option.active {
+  background-color: #3a3f4b;
+  color: #fff;
+  position: relative;
+}
+
+.theme-option.active::after {
+  content: "✓";
+  position: absolute;
+  right: 12px;
+  color: #61afef;
+}
+
+.theme-color-preview {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Remove old theme selector styles that are no longer needed */
+.textarea-theme-selector,
+.textarea-theme-button,
+.textarea-theme-dropdown,
+.textarea-theme-option,
+.theme-color {
+  display: none;
+}
+
+.monaco-editor-container {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.monaco-editor {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Make sure Monaco editor fills the container */
+.monaco-editor .margin {
+  background-color: #1e1e2e !important;
+  border-right: 1px solid #333 !important;
+}
+
+.monaco-editor .line-numbers {
+  color: #858585 !important;
+  font-size: 0.9em !important;
+}
+
+.monaco-editor .current-line {
+  border: none !important;
+  background-color: rgba(60, 60, 60, 0.36) !important;
+}
+
+/* Active line number */
+.monaco-editor .current-line ~ .line-numbers {
+  color: #c6c6c6 !important;
+}
+
+/* Make the code editor look more like VS Code */
+.monaco-editor .overflow-guard {
+  border-radius: 0 0 6px 6px;
+}
+
+/* Monaco scrollbar styling */
+.monaco-editor .monaco-scrollable-element > .scrollbar > .slider {
+  background: rgba(121, 121, 121, 0.4) !important;
+  border-radius: 10px !important;
+}
+
+.monaco-editor .monaco-scrollable-element > .scrollbar > .slider:hover {
+  background: rgba(100, 100, 100, 0.7) !important;
+}
+
+/* Theme-specific line number colors */
+.monaco-editor[data-theme="vs-light"] .margin {
+  background-color: #f3f3f3 !important;
+  border-right: 1px solid #e0e0e0 !important;
+}
+
+.monaco-editor[data-theme="vs-light"] .line-numbers {
+  color: #999999 !important;
+}
+
+.monaco-editor[data-theme="vs-light"] .current-line {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.monaco-editor[data-theme="vs-light"] .current-line ~ .line-numbers {
+  color: #333333 !important;
+}
+
+/* GitHub Dark theme */
+.monaco-editor[data-theme="github-dark"] .margin {
+  background-color: #0d1117 !important;
+  border-right: 1px solid #30363d !important;
+}
+
+.monaco-editor[data-theme="github-dark"] .line-numbers {
+  color: #6e7681 !important;
+}
+
+/* Monokai theme */
+.monaco-editor[data-theme="monokai"] .margin {
+  background-color: #272822 !important;
+  border-right: 1px solid #3e3d32 !important;
+}
+
+.monaco-editor[data-theme="monokai"] .line-numbers {
+  color: #75715e !important;
+}
+
+/* Solarized Dark theme */
+.monaco-editor[data-theme="solarized-dark"] .margin {
+  background-color: #002b36 !important;
+  border-right: 1px solid #073642 !important;
+}
+
+.monaco-editor[data-theme="solarized-dark"] .line-numbers {
+  color: #586e75 !important;
 } 

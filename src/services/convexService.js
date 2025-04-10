@@ -9,14 +9,31 @@ export const getConvexClient = () => convex;
 
 export const saveCodeExecution = async (convex, data) => {
   if (!convex) return null;
-  return await convex.mutation(api.codeExecution.saveExecution, {
+  
+  // Create a clean object to send to the mutation
+  const cleanData = {
     roomId: data.roomId,
     username: data.username,
     language: data.language,
     code: data.code,
-    output: data.output || "",
-    error: data.error || null,
-  });
+  };
+  
+  // Only add input if it's not null or undefined
+  if (data.input !== null && data.input !== undefined) {
+    cleanData.input = data.input;
+  }
+  
+  // Only add output if it's not null or undefined
+  if (data.output !== null && data.output !== undefined) {
+    cleanData.output = data.output;
+  }
+  
+  // Only add error if it's not null and not undefined
+  if (data.error !== null && data.error !== undefined) {
+    cleanData.error = data.error;
+  }
+  
+  return await convex.mutation(api.codeExecution.saveExecution, cleanData);
 };
 
 export const getRoomExecutions = async (convex, roomId, limit = 10) => {

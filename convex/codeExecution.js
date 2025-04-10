@@ -7,14 +7,36 @@ export const saveExecution = mutation({
     username: v.string(),
     language: v.string(),
     code: v.string(),
+    input: v.optional(v.string()),
     output: v.optional(v.string()),
     error: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("codeExecutions", {
-      ...args,
+    // Create a clean object to handle null values properly
+    const data = {
+      roomId: args.roomId,
+      username: args.username,
+      language: args.language,
+      code: args.code,
       timestamp: Date.now(),
-    });
+    };
+    
+    // Only add input if it's not null
+    if (args.input !== null && args.input !== undefined) {
+      data.input = args.input;
+    }
+    
+    // Only add output if it's not null
+    if (args.output !== null && args.output !== undefined) {
+      data.output = args.output;
+    }
+    
+    // Only add error if it's not null
+    if (args.error !== null && args.error !== undefined) {
+      data.error = args.error;
+    }
+    
+    return await ctx.db.insert("codeExecutions", data);
   },
 });
 

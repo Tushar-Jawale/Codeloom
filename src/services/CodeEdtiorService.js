@@ -27,7 +27,8 @@ const getInitialState = () => {
   if (typeof window === "undefined") {
     return {
       language: "javascript",
-      fontSize: 16,
+      fontSize: 14,
+      theme: "vs-dark",
       roomId: "",
       username: "",
       code: LANGUAGE_CONFIG["javascript"].defaultCode,
@@ -39,10 +40,12 @@ const getInitialState = () => {
   const savedRoomId = localStorage.getItem("room-id") || "";
   const savedUsername = localStorage.getItem("username") || "";
   const savedCode = localStorage.getItem(`editor-code-${savedLanguage}`);
+  const savedTheme = localStorage.getItem("editor-theme") || "vs-dark";
 
   return {
     language: savedLanguage,
     fontSize: Number(savedFontSize),
+    theme: savedTheme,
     roomId: savedRoomId,
     username: savedUsername,
     code: savedCode || LANGUAGE_CONFIG[savedLanguage].defaultCode,
@@ -55,11 +58,12 @@ export const CodeEditorService = create((set, get) => {
   return {
     ...initialState,
     output: "",
+    input: null,
     isRunning: false,
     error: null,
     editor: null,
     executionResult: null,
-    input: "",
+    
 
     getCode: () => {
       const editor = get().editor;
@@ -85,11 +89,9 @@ export const CodeEditorService = create((set, get) => {
     setEditor: (editor) => {
       const savedCode = localStorage.getItem(`editor-code-${get().language}`);
       if (savedCode) {
-        // Handle Monaco editor
         if (editor.setValue) {
           editor.setValue(savedCode);
         }
-        // Handle textarea
         else if (editor.value !== undefined) {
           editor.value = savedCode;
         }
@@ -98,17 +100,20 @@ export const CodeEditorService = create((set, get) => {
       set({ editor });
     },
 
+    setTheme: (theme) => {
+      localStorage.setItem("editor-theme", theme);
+      set({ theme });
+    },
+
     setFontSize: (fontSize) => {
       localStorage.setItem("editor-font-size", fontSize.toString());
       set({ fontSize });
     },
 
     setLanguage: (language) => {
-      // Save current language code before switching
       const editor = get().editor;
       if (editor) {
         let currentCode;
-        // Handle Monaco editor
         if (editor.getValue) {
           currentCode = editor.getValue();
         }
@@ -217,6 +222,7 @@ export const CodeEditorService = create((set, get) => {
           const result = { code: codeToRun, output: "", error: `Execution service error: ${response.status}` };
           try {
             await saveCodeExecution(convex, {
+              input,
               roomId,
               username,
               language,
@@ -238,6 +244,7 @@ export const CodeEditorService = create((set, get) => {
           // Save to Convex
           try {
             await saveCodeExecution(convex, {
+              input,
               roomId,
               username,
               language,
@@ -264,6 +271,7 @@ export const CodeEditorService = create((set, get) => {
               roomId,
               username,
               language,
+              input,
               ...result
             });
           } catch (saveError) {
@@ -286,6 +294,7 @@ export const CodeEditorService = create((set, get) => {
               roomId,
               username,
               language,
+              input,
               ...result
             });
           } catch (saveError) {
@@ -310,6 +319,7 @@ export const CodeEditorService = create((set, get) => {
             roomId,
             username,
             language,
+            input,
             ...result
           });
         } catch (saveError) {
@@ -331,6 +341,7 @@ export const CodeEditorService = create((set, get) => {
             roomId,
             username,
             language,
+            input,
             ...result
           });
         } catch (saveError) {

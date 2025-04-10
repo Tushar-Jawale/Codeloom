@@ -7,6 +7,7 @@ export default defineSchema({
         username: v.string(),
         language: v.string(),
         code: v.string(),
+        input: v.optional(v.string()),
         output: v.optional(v.string()),
         error: v.optional(v.string()),
         timestamp: v.number(),
