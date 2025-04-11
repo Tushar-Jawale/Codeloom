@@ -3,7 +3,7 @@ import {LANGUAGE_CONFIG, defineMonacoThemes, THEMES, THEME_DEFINITIONS} from './
 import OutputPanel from '../pages/OutputPanel';
 import { LuMoon } from "react-icons/lu";
 import { MdOutlineWbSunny } from "react-icons/md";
-import { CodeEditorService, getLanguageIcon } from '../services/CodeEdtiorService';
+import { CodeEditorService } from '../services/CodeEdtiorService';
 import { Editor as MonacoEditor } from '@monaco-editor/react';
 import RunButton from './RunButton';
 import './Editor.css';
@@ -41,20 +41,30 @@ const Editor = () => {
     }
     editor.updateOptions({ 
       fontSize,
-      padding: { bottom: 15 }
+      lineHeight: fontSize * 1.5,
+      padding: { bottom: 15 },
+      lineNumbersMinChars: 3,
+      folding: true,
+      glyphMargin: false
     });
+    editor.layout();
   };
 
-  // Apply theme changes to Monaco and entire component
   useEffect(() => {
-    // Apply theme to document root first (for all CSS variables)
-    document.documentElement.setAttribute('data-theme', theme);
-    
-    // Apply theme to Monaco editor
+    if (monacoEditorRef.current) {
+      monacoEditorRef.current.updateOptions({ 
+        fontSize: fontSize,
+        lineHeight: fontSize * 1.5,
+        lineNumbersMinChars: 3
+      });
+      monacoEditorRef.current.layout();
+    }
+  }, [fontSize]);
+
+  useEffect(() => {
+  document.documentElement.setAttribute('data-theme', theme);
     if (monacoInstanceRef.current) {
       monacoInstanceRef.current.editor.setTheme(theme);
-      
-      // Update data-theme attribute when theme changes
       if (monacoEditorRef.current) {
         const editorDomNode = monacoEditorRef.current.getDomNode();
         if (editorDomNode) {
@@ -62,29 +72,17 @@ const Editor = () => {
         }
       }
     }
-    
-    // Apply theme to the entire container
     if (editorContainerRef.current) {
       editorContainerRef.current.setAttribute('data-theme', theme);
     }
-    
-    // Apply theme to document for broader application
     document.documentElement.setAttribute('data-editor-theme', theme);
     document.body.setAttribute('data-theme', theme);
-    
-    // Update UI colors based on theme
-    const currentThemeObj = THEMES.find(t => t.id === theme) || THEMES[0];
-    const isDark = theme !== 'vs-light';
-    
-    // Update inner elements directly to force style refresh
     const updateElements = (selector, themeAttribute) => {
       const elements = document.querySelectorAll(selector);
       elements.forEach(el => {
         el.setAttribute('data-theme', themeAttribute);
       });
     };
-    
-    // Update all themed elements
     updateElements('.output-panel-container', theme);
     updateElements('.input-panel', theme);
     updateElements('.output-panel-right', theme);
@@ -95,23 +93,13 @@ const Editor = () => {
     
   }, [theme]);
 
-  useEffect(() => {
-    if (monacoEditorRef.current) {
-      monacoEditorRef.current.updateOptions({ fontSize });
-    }
-  }, [fontSize]);
-
   const toggleTheme = () => {
     const newTheme = theme === 'vs-dark' ? 'vs-light' : 'vs-dark';
     setTheme(newTheme);
-    
-    // Force theme update through a delayed call
     setTimeout(() => {
       console.log('Forcing theme update:', newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
       document.body.setAttribute('data-theme', newTheme);
-      
-      // Force update on all theme-sensitive elements
       const updateElements = (selector, themeAttribute) => {
         const elements = document.querySelectorAll(selector);
         elements.forEach(el => {
@@ -124,12 +112,10 @@ const Editor = () => {
       updateElements('.output-panel-right', newTheme);
       updateElements('.output-area', newTheme);
       updateElements('.input-textarea', newTheme);
-      
-      // For any stubborn elements, try forcing a repaint
       const outputPanel = document.querySelector('.output-panel-container');
       if (outputPanel) {
         outputPanel.style.display = 'none';
-        outputPanel.offsetHeight; // Force repaint
+        outputPanel.offsetHeight;
         outputPanel.style.display = 'flex';
       }
     }, 50);
@@ -171,7 +157,9 @@ const Editor = () => {
         <div className="editor-header">
           <div className="left-controls">
             <div className="language-selector">
-              <div className="language-icon">{getLanguageIcon(language)}</div>
+              <div className="language-icon">
+                <i className={LANGUAGE_CONFIG[language]?.iconClass}></i>
+              </div>
               <select 
                 value={language} 
                 onChange={(e) => setLanguage(e.target.value)}
@@ -184,8 +172,6 @@ const Editor = () => {
                 ))}
               </select>
             </div>
-            
-            {/* Theme toggle button */}
             <button 
               className="theme-toggle-button"
               onClick={toggleTheme}
@@ -207,7 +193,7 @@ const Editor = () => {
             <div className="font-size-control">
               <span className="font-label">Font Size:</span>
               <button onClick={decreaseFontSize} className="font-size-button">-</button>
-              <span className="font-size-value">{fontSize}px</span>
+              <span className="font-size-value">{fontSize}</span>
               <button onClick={increaseFontSize} className="font-size-button">+</button>
             </div>
             <button onClick={handleCopy} className="action-button">
@@ -234,11 +220,9 @@ const Editor = () => {
                 scrollBeyondLastLine: false,
                 fontFamily: "'Consolas', 'Monaco', 'Fira Code', monospace",
                 fontSize: fontSize,
+                lineHeight: fontSize * 1.5,
                 tabSize: 2,
                 scrollbar: {
-                  useShadows: false,
-                  verticalHasArrows: false,
-                  horizontalHasArrows: false,
                   vertical: 'visible',
                   horizontal: 'visible',
                   verticalScrollbarSize: 12,
@@ -250,12 +234,11 @@ const Editor = () => {
                 formatOnType: true,
                 wordWrap: 'off',
                 lineNumbers: 'on',
-                lineNumbersMinChars: 4,
-                glyphMargin: false,
+                lineNumbersMinChars: 3,
+                lineDecorationsWidth: 0,
                 folding: true,
                 renderLineHighlight: 'line',
                 renderIndentGuides: true,
-                lineDecorationsWidth: 10,
                 fixedOverflowWidgets: true,
                 guides: {
                   indentation: true,

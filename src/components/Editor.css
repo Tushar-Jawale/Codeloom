@@ -1,4 +1,3 @@
-/* Dark theme variables (default) */
 :root {
   --editor-bg: #1e1e2e;
   --editor-text: #e0e0e0;
@@ -8,7 +7,6 @@
   --editor-highlight: #61afef;
 }
 
-/* Light theme variables */
 :root[data-theme="vs-light"] {
   --editor-bg: #f8f8f8;
   --editor-text: #333333;
@@ -57,7 +55,6 @@
   gap: 15px;
 }
 
-/* Center controls for the Run button */
 .center-controls {
   display: flex;
   align-items: center;
@@ -71,14 +68,20 @@
   gap: 8px;
 }
 
-/* Custom styling for the theme selector positioning */
 .left-controls .dropdown-container {
   margin-left: 16px;
 }
 
 .language-icon {
-  font-size: 20px;
+  font-size: 24px;
   color: var(--editor-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-icon i {
+  font-size: 24px;
 }
 
 .language-select {
@@ -119,7 +122,7 @@
 .font-size-button {
   background-color: var(--editor-control-bg);
   color: var(--editor-text);
-  border: 1px solid var(--editor-border);
+  border: 1px solid white;
   border-radius: 4px;
   width: 24px;
   height: 24px;
@@ -132,20 +135,17 @@
 }
 
 .font-size-button:hover {
-  background-color: var(--editor-highlight);
-  color: #fff;
-  border-color: var(--editor-highlight);
+  background-color: rgba(25, 10, 76, 0.1);
 }
 
 .font-size-value {
-  min-width: 36px;
+  width: 36px;
   text-align: center;
   color: var(--editor-text);
   font-size: 14px;
   transition: color 0.3s ease;
+  display: inline-block;
 }
-
-/* Run button container in header */
 .run-button-container {
   display: flex;
   align-items: center;
@@ -256,8 +256,6 @@
 .action-button:active {
   transform: translate3d(0, 0, 0);
 }
-
-/* Theme toggle button */
 .theme-toggle-button {
   display: flex;
   align-items: center;
@@ -289,8 +287,6 @@
   width: 20px;
   height: 20px;
 }
-
-/* Enhanced theme selector */
 .theme-selector {
   position: relative;
   display: flex;
@@ -345,17 +341,6 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -4px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 .theme-option {
   display: flex;
   align-items: center;
@@ -390,21 +375,6 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Remove old theme selector styles that are no longer needed */
-.theme-selector,
-.theme-select-button,
-.theme-color-indicator,
-.dropdown-arrow,
-.theme-dropdown-menu,
-.theme-option,
-.textarea-theme-selector,
-.textarea-theme-button,
-.textarea-theme-dropdown,
-.textarea-theme-option,
-.theme-color {
-  display: none;
-}
-
 .monaco-editor-container {
   flex: 1;
   height: 100%;
@@ -420,30 +390,27 @@
   overflow: hidden;
 }
 
-/* Make the code editor look more like VS Code */
 .monaco-editor .overflow-guard {
   border-radius: 0 0 6px 6px;
 }
 
-/* Adjust the width of the line numbers margin to 70% of original */
 .monaco-editor .margin {
-  width: 42px !important; /* Set to approximately 70% of original width */
+  width: auto !important; 
+  min-width: 42px !important;
+  max-width: 60px !important;
   background-color: #1e1e2e !important;
   border-right: none !important;
 }
-
-/* Make line numbers larger and properly aligned */
 .monaco-editor .margin-view-overlays .line-numbers {
   font-size: 100% !important;
   text-align: right !important;
+  white-space: nowrap !important;
 }
 
 .monaco-editor .current-line {
   border: none !important;
   background-color: rgba(60, 60, 60, 0.36) !important;
 }
-
-/* Theme-specific line number colors */
 .monaco-editor[data-theme="vs-light"] .margin {
   background-color: #f3f3f3 !important;
   border-right: none !important;

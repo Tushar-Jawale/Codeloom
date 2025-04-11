@@ -3,9 +3,11 @@ import { AlertTriangle, Clock, Terminal, Type, X } from "lucide-react";
 import "./OutputPanel.css";
 import { useState, useEffect } from "react";
 
+
 function OutputPanel() {
   const { output, error, isRunning, executionResult, setInput, theme, clearOutput } = CodeEditorService();
   const [inputText, setInputText] = useState("");
+  const [inputSizeWarning, setInputSizeWarning] = useState(false);
 
   // Log theme changes
   useEffect(() => {
@@ -30,12 +32,7 @@ function OutputPanel() {
   const handleClearInput = () => {
     setInputText("");
     setInput("");
-  };
-  
-  const handleClearOutput = () => {
-    if (clearOutput) {
-      clearOutput();
-    }
+    setInputSizeWarning(false);
   };
 
   return (
@@ -46,13 +43,31 @@ function OutputPanel() {
             <div className="input-panel-title">
               <Type size={16} className="input-icon" />
               <span className="input-title">Input</span>
+              {inputSizeWarning && (
+                <span className="input-warning">
+                  <AlertTriangle size={14} />
+                  Input size exceeds limit
+                </span>
+              )}
             </div>
             
             <button className="clear-button input-clear-button" onClick={handleClearInput} title="Clear input">
               Clear
             </button> 
           </div>
-          <textarea className="input-textarea" placeholder="Enter input for your code here..." value={inputText} onChange={handleInputChange} data-theme={theme} />
+          <textarea 
+            className={`input-textarea ${inputSizeWarning ? 'input-size-warning' : ''}`} 
+            placeholder="Enter input for your code here..." 
+            value={inputText} 
+            onChange={handleInputChange} 
+            data-theme={theme} 
+          />
+          {inputSizeWarning && (
+            <div className="size-warning-message">
+              Your input exceeds the maximum size limit (64KB). 
+              The code might not execute properly.
+            </div>
+          )}
         </div>
 
         <div className="output-panel-right" data-theme={theme}>
@@ -70,6 +85,8 @@ function OutputPanel() {
                   <div className="skeleton-line" />
                   <div className="skeleton-line" />
                 </div>
+              ) : output ? (
+                <div className="output-text">{formatOutput(output)}</div>
               ) : error ? (
                 <div className="error-message">
                   <AlertTriangle className="icon" />
@@ -78,8 +95,6 @@ function OutputPanel() {
                     <div className="error-text">{error}</div>
                   </div>
                 </div>
-              ) : output ? (
-                <div className="output-text">{formatOutput(output)}</div>
               ) : (
                 <div className="idle-message">
                   <Clock className="icon" />

@@ -3,12 +3,10 @@ import "./RunButton.css";
 import { getExecutionResult, CodeEditorService } from "../services/CodeEdtiorService";
 import { motion } from "framer-motion";
 import { Loader2, Play } from "lucide-react";
-import { useConvex } from "convex/react";
 import toast from "react-hot-toast";
 
 function RunButton() {
   const { runCode, language, isRunning, roomId, username, code } = CodeEditorService();
-  const convex = useConvex();
 
   const handleRun = async () => {
     if (!roomId || !username) {
@@ -16,7 +14,7 @@ function RunButton() {
       return;
     }
     
-    await runCode(convex);
+    await runCode();
   };
 
   return (

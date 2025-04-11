@@ -1,26 +1,29 @@
 import LANGUAGE_CONFIG from "../components/languageConfig"
 import { create } from "zustand";
-import { getConvexClient, saveCodeExecution } from "./convexService";
+import { saveCodeExecution } from "./localStorageService";
+import { compileCode } from "./judge0Service";
 
-export const getLanguageIcon = (language) => {
-  const icons = {
-    javascript: '📜',
-    typescript: '📘',
-    python: '🐍',
-    java: '☕',
-    c: '📊',
-    csharp: '🔷',
-    cpp: '🔨',
-    php: '🐘',
-    ruby: '💎',
-    swift: '🦅',
-    go: '🐹',
-    rust: '🦀',
-    html: '🌐',
-    css: '🎨',
-    sqlite3: '🗃️'
-  };
-  return icons[language] || '📝';
+// Default values for environment variables 
+const DEFAULT_CPU_TIME_LIMIT = 5;
+const DEFAULT_MEMORY_LIMIT = 128000;
+
+// Safely get environment variables with fallbacks
+const getCpuTimeLimit = () => {
+  try {
+    return typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_CPU_TIME_LIMIT ? 
+      Number(process.env.NEXT_PUBLIC_CPU_TIME_LIMIT) : DEFAULT_CPU_TIME_LIMIT;
+  } catch (error) {
+    return DEFAULT_CPU_TIME_LIMIT;
+  }
+};
+
+const getMemoryLimit = () => {
+  try {
+    return typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_MEMORY_LIMIT ? 
+      Number(process.env.NEXT_PUBLIC_MEMORY_LIMIT) : DEFAULT_MEMORY_LIMIT;
+  } catch (error) {
+    return DEFAULT_MEMORY_LIMIT;
+  }
 };
 
 const getInitialState = () => {
@@ -167,7 +170,7 @@ export const CodeEditorService = create((set, get) => {
       set({ username });
     },
 
-    runCode: async (convex) => {
+    runCode: async () => {
       const { language, code, roomId, username, input } = get();
       const codeToRun = get().getCode();
 
@@ -181,11 +184,6 @@ export const CodeEditorService = create((set, get) => {
         return;
       }
 
-      if (!convex) {
-        set({ error: "API connection error" });
-        return;
-      }
-
       set({ isRunning: true, error: null, output: "" });
 
       try {
@@ -194,35 +192,42 @@ export const CodeEditorService = create((set, get) => {
           return;
         }
         
-        if (!LANGUAGE_CONFIG[language].pistonRuntime) {
+        if (!LANGUAGE_CONFIG[language].judge0Runtime) {
           set({ error: `Language ${language} runtime is not configured` });
           return;
         }
         
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
+        const runtime = LANGUAGE_CONFIG[language].judge0Runtime;
         
-        const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            language: runtime.language,
-            version: runtime.version,
-            files: [{ content: codeToRun }],
-            stdin: input,
-            run_timeout: 10000,
-          }),
-        });
+        // Use the Judge0Service instead of direct fetch
+        const requestData = {
+          language: runtime.language,
+          files: [{ content: codeToRun }],
+          stdin: input,
+          cpuTimeLimit: getCpuTimeLimit(),
+          memoryLimit: getMemoryLimit(),
+        };
+        
+        let data;
+        try {
+          // Try the online Judge0 service
+          data = await compileCode(requestData);
+          console.log("Execution data received:", data);
+        } 
+          catch (serviceError) {
+            console.error("Got error from Judge0 service", serviceError);
+          }
+          // Try offline execution as fallback (JavaScript only)
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          set({ error: `Execution service error: ${response.status}` });
+        
+        // Error from the service itself
+        if (data.error) {
+          set({ error: `Execution service error: ${data.error}` });
           
-          // Save to Convex
-          const result = { code: codeToRun, output: "", error: `Execution service error: ${response.status}` };
+          // Save to local storage
+          const result = { code: codeToRun, output: "", error: `Execution service error: ${data.error}` };
           try {
-            await saveCodeExecution(convex, {
+            await saveCodeExecution({
               input,
               roomId,
               username,
@@ -235,16 +240,14 @@ export const CodeEditorService = create((set, get) => {
           return;
         }
 
-        const data = await response.json();
-
         // handle API-level errors
         if (data.message) {
           const result = { code: codeToRun, output: "", error: data.message };
           set({ error: data.message, executionResult: result });
           
-          // Save to Convex
+          // Save to local storage
           try {
-            await saveCodeExecution(convex, {
+            await saveCodeExecution({
               input,
               roomId,
               username,
@@ -266,9 +269,9 @@ export const CodeEditorService = create((set, get) => {
             executionResult: result,
           });
           
-          // Save to Convex
+          // Save to local storage
           try {
-            await saveCodeExecution(convex, {
+            await saveCodeExecution({
               roomId,
               username,
               language,
@@ -281,7 +284,9 @@ export const CodeEditorService = create((set, get) => {
           return;
         }
 
+        // handle run errors - updated to check for any non-zero status code
         if (data.run && data.run.code !== 0) {
+          console.log("Run error detected. Code:", data.run.code);
           const errorMsg = data.run.stderr || data.run.output;
           const result = { code: codeToRun, output: "", error: errorMsg };
           set({
@@ -289,9 +294,9 @@ export const CodeEditorService = create((set, get) => {
             executionResult: result,
           });
           
-          // Save to Convex
+          // Save to local storage
           try {
-            await saveCodeExecution(convex, {
+            await saveCodeExecution({
               roomId,
               username,
               language,
@@ -306,17 +311,21 @@ export const CodeEditorService = create((set, get) => {
 
         // if we get here, execution was successful
         const output = data.run.output;
-        const result = { code: codeToRun, output: output.trim(), error: null };
+        
+        // In Judge0, the output may be in stderr even for successful runs
+        // Make sure we capture all output
+        const allOutput = output || data.run.stderr || "";
+        const result = { code: codeToRun, output: allOutput.trim(), error: null };
         
         set({
-          output: output.trim(),
+          output: allOutput.trim(),
           error: null,
           executionResult: result,
         });
         
-        // Save successful execution to Convex
+        // Save successful execution to local storage
         try {
-          await saveCodeExecution(convex, {
+          await saveCodeExecution({
             roomId,
             username,
             language,
@@ -336,9 +345,9 @@ export const CodeEditorService = create((set, get) => {
           executionResult: result,
         });
         
-        // Save to Convex
+        // Save to local storage
         try {
-          await saveCodeExecution(convex, {
+          await saveCodeExecution({
             roomId,
             username,
             language,
