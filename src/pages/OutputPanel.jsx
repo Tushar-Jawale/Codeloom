@@ -1,18 +1,12 @@
 import { CodeEditorService } from "../services/CodeEdtiorService";
 import { AlertTriangle, Clock, Terminal, Type, X } from "lucide-react";
 import "./OutputPanel.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 
 function OutputPanel() {
   const { output, error, isRunning, executionResult, setInput, theme, clearOutput } = CodeEditorService();
   const [inputText, setInputText] = useState("");
-  const [inputSizeWarning, setInputSizeWarning] = useState(false);
-
-  // Log theme changes
-  useEffect(() => {
-    console.log("Theme updated in OutputPanel:", theme);
-  }, [theme]);
 
   const formatOutput = (text) => {
     if (!text) return "";
@@ -32,7 +26,6 @@ function OutputPanel() {
   const handleClearInput = () => {
     setInputText("");
     setInput("");
-    setInputSizeWarning(false);
   };
 
   return (
@@ -43,12 +36,6 @@ function OutputPanel() {
             <div className="input-panel-title">
               <Type size={16} className="input-icon" />
               <span className="input-title">Input</span>
-              {inputSizeWarning && (
-                <span className="input-warning">
-                  <AlertTriangle size={14} />
-                  Input size exceeds limit
-                </span>
-              )}
             </div>
             
             <button className="clear-button input-clear-button" onClick={handleClearInput} title="Clear input">
@@ -56,18 +43,12 @@ function OutputPanel() {
             </button> 
           </div>
           <textarea 
-            className={`input-textarea ${inputSizeWarning ? 'input-size-warning' : ''}`} 
+            className="input-textarea" 
             placeholder="Enter input for your code here..." 
             value={inputText} 
             onChange={handleInputChange} 
             data-theme={theme} 
           />
-          {inputSizeWarning && (
-            <div className="size-warning-message">
-              Your input exceeds the maximum size limit (64KB). 
-              The code might not execute properly.
-            </div>
-          )}
         </div>
 
         <div className="output-panel-right" data-theme={theme}>

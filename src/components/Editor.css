@@ -23,7 +23,6 @@
   width: 100%;
   overflow: hidden;
   background-color: var(--editor-bg);
-  border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
   color: var(--editor-text);
@@ -73,15 +72,12 @@
 }
 
 .language-icon {
-  font-size: 24px;
-  color: var(--editor-text);
   display: flex;
-  align-items: center;
-  justify-content: center;
+
 }
 
 .language-icon i {
-  font-size: 24px;
+  font-size: 25px;
 }
 
 .language-select {
@@ -120,7 +116,7 @@
 }
 
 .font-size-button {
-  background-color: var(--editor-control-bg);
+  background-color: rgba(117, 86, 232, 0.1);
   color: var(--editor-text);
   border: 1px solid white;
   border-radius: 4px;
@@ -135,7 +131,7 @@
 }
 
 .font-size-button:hover {
-  background-color: rgba(25, 10, 76, 0.1);
+  background-color: rgba(9, 7, 74, 0.2);
 }
 
 .font-size-value {
@@ -145,26 +141,6 @@
   font-size: 14px;
   transition: color 0.3s ease;
   display: inline-block;
-}
-.run-button-container {
-  display: flex;
-  align-items: center;
-  margin: 0 16px;
-}
-
-.refresh-button {
-  background-color: #61afef;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.refresh-button:hover {
-  background-color: #528bff;
 }
 
 .editor-container {
@@ -176,7 +152,6 @@
   background-color: var(--editor-bg);
   transition: background-color 0.3s ease;
 }
-
 
 .code-textarea {
   flex: 1;
@@ -210,33 +185,8 @@
   width: 100%;
 }
 
-.code-textarea::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-  display: block;
-}
-
-.code-textarea::-webkit-scrollbar-track {
-  background: #21252b;
-}
-
-.code-textarea::-webkit-scrollbar-thumb {
-  background: #89b4fa;
-  border-radius: 4px;
-  border: 2px solid #21252b;
-  min-height: 30px;
-}
-
-.code-textarea::-webkit-scrollbar-thumb:hover {
-  background: #b4befe;
-}
-
-.code-textarea::-webkit-scrollbar-corner {
-  background: #21252b;
-}
-
 .action-button {
-  background-color: var(--editor-control-bg);
+  background-color: rgba(117, 86, 232, 0.1);
   color: var(--editor-text);
   border: 1px solid white;
   border-radius: 4px;
@@ -250,7 +200,7 @@
 }
 
 .action-button:hover {
-  background-color: rgba(25, 10, 76, 0.1);
+  background-color: rgba(9, 7, 74, 0.2);
 }
 
 .action-button:active {
@@ -269,7 +219,6 @@
   margin-left: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -287,93 +236,7 @@
   width: 20px;
   height: 20px;
 }
-.theme-selector {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.theme-select-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: var(--editor-control-bg);
-  color: var(--editor-text);
-  border: 1px solid var(--editor-border);
-  border-radius: 4px;
-  padding: 6px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.theme-select-button:hover {
-  border-color: var(--editor-highlight);
-}
-
-.theme-color-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.dropdown-arrow {
-  transition: transform 0.2s ease;
-}
-
-.dropdown-arrow.open {
-  transform: rotate(180deg);
-}
-
-.theme-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  width: 180px;
-  background-color: var(--editor-control-bg);
-  border: 1px solid var(--editor-border);
-  border-radius: 4px;
-  padding: 4px 0;
-  z-index: 1000;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.2s ease;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.theme-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  color: var(--editor-text);
-  transition: background-color 0.2s ease;
-}
-
-.theme-option:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.theme-option.active {
-  background-color: rgba(var(--editor-highlight), 0.2);
-  color: var(--editor-highlight);
-  position: relative;
-}
-
-.theme-option.active::after {
-  content: "✓";
-  position: absolute;
-  right: 12px;
-  color: var(--editor-highlight);
-}
-
-.theme-color-preview {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
 
 .monaco-editor-container {
   flex: 1;

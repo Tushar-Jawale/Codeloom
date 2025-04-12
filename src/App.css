@@ -1,54 +1,23 @@
-:root {
-  --home-bg: #121212;
-  --form-bg: #282a36;
-  --text-color: #ffffff;
-  --input-bg: #eee;
-  --input-text: #333;
-  --primary-color: #4aed88;
-  --primary-hover: #2b824c;
-  --button-text: #ffffff;
-}
-
-/* Theme variables */
-html[data-editor-theme="vs-light"] {
-  --home-bg: #f5f5f5;
-  --form-bg: #ffffff;
-  --text-color: #333333;
-  --input-bg: #f0f0f0;
-  --input-text: #333333;
-  --primary-color: #0078d4;
-  --primary-hover: #0067b8;
-  --button-text: #ffffff;
-}
-
-body {
-  background-color: var(--home-bg);
-  transition: background-color 0.3s ease;
-}
-
 .HomeWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-color);
+  color:#fff;
   min-height: 100vh;
   transition: color 0.3s ease;
 }
 
 .FormWrapper{
-  background-color: var(--form-bg);
+  background-color: #282a36;
   padding: 20px;
   border-radius: 10px;
   width: 400px;
   max-width: 90%;
-  transition: background-color 0.3s ease;
 }
 
 footer{
   position: fixed;
   bottom: 0;
-  color: var(--text-color);
-  transition: color 0.3s ease;
 }
 
 .inputGroup{  
@@ -59,8 +28,6 @@ footer{
 .mainLabel{
   margin-bottom: 20px;
   margin-top: 0;
-  color: var(--text-color);
-  transition: color 0.3s ease;
 }
 
 .logo{
@@ -68,68 +35,64 @@ footer{
   margin-bottom: 30px;
 }
 
-.inputBox{
-  padding: 8px;
+.inputBox {
+  padding: 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   margin-bottom: 14px;
-  font-size: 14px;
-  background-color: var(--input-bg);
-  color: var(--input-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: #eee;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .inputField{
-  padding: 8px;
+  padding: 10px;
   border-radius: 5px;
   outline: none;
   border: none;
   margin-bottom: 14px;
-  font-size: 14px;
-  background-color: var(--input-bg);
-  color: var(--input-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 16px;
+  background-color: #eee;
+  font-weight: bold;
 }
 
 .btn{
-  padding: 8px;
+  padding: 10px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
   transition: all 0.3s ease-in-out;
-  color: var(--button-text);
 }
 
-.joinButton,.leaveBtn{
-   background-color: var(--primary-color);
+.joinButton{
+  color: #000;
+   background-color: #4aed88;
    width: 100px;
    margin-left: auto;
 }
 
-.joinButton:hover,.leaveBtn:hover{
-  background-color: var(--primary-hover);
+.joinButton:hover{
+  background-color: #2b824c;
 }
 
 .createInfo{
   margin: 0 auto;
   margin-top: 20px;
-  color: var(--text-color);
-  transition: color 0.3s ease;
 }
 
 .createNewBtn{
-  color: var(--primary-color);
+  color: #4aed88;
   text-decoration: none;
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid #4aed88;
   transition: all 0.3s ease-in-out;
 }
 
 .createNewBtn:hover{
-  color: var(--primary-hover);
-  border-color: var(--primary-hover);
+  color: #368654;
+  border-color: #368654;
 }
 
 .editorPage{

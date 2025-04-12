@@ -89,15 +89,12 @@ const Editor = () => {
     updateElements('.output-area', theme);
     updateElements('.input-textarea', theme);
     
-    console.log('Applied theme to root and all elements:', theme);
-    
   }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'vs-dark' ? 'vs-light' : 'vs-dark';
     setTheme(newTheme);
     setTimeout(() => {
-      console.log('Forcing theme update:', newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
       document.body.setAttribute('data-theme', newTheme);
       const updateElements = (selector, themeAttribute) => {
@@ -146,8 +143,6 @@ const Editor = () => {
       console.error('Failed to copy text: ', err);
     }
   };
-
-  const currentTheme = THEMES.find(t => t.id === theme) || THEMES[0];
   const monacoLanguage = LANGUAGE_CONFIG[language]?.monacoLanguage || language;
   const isDarkTheme = theme === 'vs-dark';
 
@@ -236,6 +231,7 @@ const Editor = () => {
                 lineNumbers: 'on',
                 lineNumbersMinChars: 3,
                 lineDecorationsWidth: 0,
+                contextmenu: false,
                 folding: true,
                 renderLineHighlight: 'line',
                 renderIndentGuides: true,

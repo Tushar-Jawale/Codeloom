@@ -22,14 +22,5 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    define: {
-      // Provide fallbacks for each environment variable
-      'process.env.NEXT_PUBLIC_RAPIDAPI_KEY': JSON.stringify(env.NEXT_PUBLIC_RAPIDAPI_KEY || ''),
-      'process.env.NEXT_PUBLIC_RAPIDAPI_HOST': JSON.stringify(env.NEXT_PUBLIC_RAPIDAPI_HOST || ''),
-      'process.env.NEXT_PUBLIC_JUDGE0_API_URL': JSON.stringify(env.NEXT_PUBLIC_JUDGE0_API_URL || ''),
-      'process.env.NEXT_PUBLIC_CPU_TIME_LIMIT': JSON.stringify(env.NEXT_PUBLIC_CPU_TIME_LIMIT || '5'),
-      'process.env.NEXT_PUBLIC_MEMORY_LIMIT': JSON.stringify(env.NEXT_PUBLIC_MEMORY_LIMIT || '128000'),
-      ...envWithKeys
-    }
   }
 })

@@ -1,17 +1,9 @@
 .avatar-wrapper {
     display: flex;
     align-items: center;
+    flex-direction: column;
+    font-weight: bold;
 }
-
-:root {
-    --avatar-border: #4aed88;
+.userName {
+    margin-top: 10px;
 }
-
-.editorPage[data-theme="vs-light"] .avatar-wrapper img {
-    border: 2px solid #0078d4;
-}
-
-.avatar-wrapper img {
-    border: 2px solid #4aed88;
-    transition: border-color 0.3s ease;
-} 

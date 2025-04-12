@@ -3,11 +3,9 @@ import { create } from "zustand";
 import { saveCodeExecution } from "./localStorageService";
 import { compileCode } from "./judge0Service";
 
-// Default values for environment variables 
 const DEFAULT_CPU_TIME_LIMIT = 5;
 const DEFAULT_MEMORY_LIMIT = 128000;
 
-// Safely get environment variables with fallbacks
 const getCpuTimeLimit = () => {
   try {
     return typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_CPU_TIME_LIMIT ? 
@@ -72,12 +70,10 @@ export const CodeEditorService = create((set, get) => {
       const editor = get().editor;
       if (!editor) return get().code;
       
-      // Handle Monaco editor
       if (editor.getValue) {
         return editor.getValue();
       }
       
-      // Handle textarea
       if (editor.value !== undefined) {
         return editor.value;
       }
@@ -120,7 +116,6 @@ export const CodeEditorService = create((set, get) => {
         if (editor.getValue) {
           currentCode = editor.getValue();
         }
-        // Handle textarea
         else if (editor.value !== undefined) {
           currentCode = editor.value;
         }
@@ -179,11 +174,6 @@ export const CodeEditorService = create((set, get) => {
         return;
       }
 
-      if (!roomId || !username) {
-        set({ error: "Room ID and username are required" });
-        return;
-      }
-
       set({ isRunning: true, error: null, output: "" });
 
       try {
@@ -199,7 +189,6 @@ export const CodeEditorService = create((set, get) => {
         
         const runtime = LANGUAGE_CONFIG[language].judge0Runtime;
         
-        // Use the Judge0Service instead of direct fetch
         const requestData = {
           language: runtime.language,
           files: [{ content: codeToRun }],
@@ -210,21 +199,16 @@ export const CodeEditorService = create((set, get) => {
         
         let data;
         try {
-          // Try the online Judge0 service
           data = await compileCode(requestData);
           console.log("Execution data received:", data);
         } 
           catch (serviceError) {
             console.error("Got error from Judge0 service", serviceError);
           }
-          // Try offline execution as fallback (JavaScript only)
-
-        
-        // Error from the service itself
+         
         if (data.error) {
           set({ error: `Execution service error: ${data.error}` });
           
-          // Save to local storage
           const result = { code: codeToRun, output: "", error: `Execution service error: ${data.error}` };
           try {
             await saveCodeExecution({
@@ -240,27 +224,11 @@ export const CodeEditorService = create((set, get) => {
           return;
         }
 
-        // handle API-level errors
         if (data.message) {
           const result = { code: codeToRun, output: "", error: data.message };
           set({ error: data.message, executionResult: result });
-          
-          // Save to local storage
-          try {
-            await saveCodeExecution({
-              input,
-              roomId,
-              username,
-              language,
-              ...result
-            });
-          } catch (saveError) {
-            console.error("Failed to save execution:", saveError);
-          }
-          return;
         }
 
-        // handle compilation errors
         if (data.compile && data.compile.code !== 0) {
           const errorMsg = data.compile.stderr || data.compile.output;
           const result = { code: codeToRun, output: "", error: errorMsg };
@@ -268,52 +236,9 @@ export const CodeEditorService = create((set, get) => {
             error: errorMsg,
             executionResult: result,
           });
-          
-          // Save to local storage
-          try {
-            await saveCodeExecution({
-              roomId,
-              username,
-              language,
-              input,
-              ...result
-            });
-          } catch (saveError) {
-            console.error("Failed to save execution:", saveError);
-          }
-          return;
         }
 
-        // handle run errors - updated to check for any non-zero status code
-        if (data.run && data.run.code !== 0) {
-          console.log("Run error detected. Code:", data.run.code);
-          const errorMsg = data.run.stderr || data.run.output;
-          const result = { code: codeToRun, output: "", error: errorMsg };
-          set({
-            error: errorMsg,
-            executionResult: result,
-          });
-          
-          // Save to local storage
-          try {
-            await saveCodeExecution({
-              roomId,
-              username,
-              language,
-              input,
-              ...result
-            });
-          } catch (saveError) {
-            console.error("Failed to save execution:", saveError);
-          }
-          return;
-        }
-
-        // if we get here, execution was successful
         const output = data.run.output;
-        
-        // In Judge0, the output may be in stderr even for successful runs
-        // Make sure we capture all output
         const allOutput = output || data.run.stderr || "";
         const result = { code: codeToRun, output: allOutput.trim(), error: null };
         
@@ -322,41 +247,6 @@ export const CodeEditorService = create((set, get) => {
           error: null,
           executionResult: result,
         });
-        
-        // Save successful execution to local storage
-        try {
-          await saveCodeExecution({
-            roomId,
-            username,
-            language,
-            input,
-            ...result
-          });
-        } catch (saveError) {
-          console.error("Failed to save execution:", saveError);
-        }
-      } catch (error) {
-        console.error("Error running code:", error);
-        const errorMsg = "Error running code";
-        const result = { code: codeToRun, output: "", error: errorMsg };
-        
-        set({
-          error: errorMsg,
-          executionResult: result,
-        });
-        
-        // Save to local storage
-        try {
-          await saveCodeExecution({
-            roomId,
-            username,
-            language,
-            input,
-            ...result
-          });
-        } catch (saveError) {
-          console.error("Failed to save execution:", saveError);
-        }
       } finally {
         set({ isRunning: false });
       }

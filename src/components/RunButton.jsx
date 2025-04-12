@@ -1,19 +1,12 @@
 import React from "react";
-import "./RunButton.css";
-import { getExecutionResult, CodeEditorService } from "../services/CodeEdtiorService";
+import { CodeEditorService } from "../services/CodeEdtiorService";
 import { motion } from "framer-motion";
 import { Loader2, Play } from "lucide-react";
-import toast from "react-hot-toast";
 
 function RunButton() {
-  const { runCode, language, isRunning, roomId, username, code } = CodeEditorService();
+  const { runCode, isRunning} = CodeEditorService();
 
   const handleRun = async () => {
-    if (!roomId || !username) {
-      toast.error("Room ID and username are required");
-      return;
-    }
-    
     await runCode();
   };
 
@@ -30,7 +23,12 @@ function RunButton() {
         <div className="button-content">
           {isRunning ? (
             <>
-              <Loader2 className="loader-icon" />
+              <motion.div
+                animate={{ rotate: 270 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              >
+                <Loader2 className="loader-icon" />
+              </motion.div>
               <span className="loader-text">Executing...</span>
             </>
           ) : (

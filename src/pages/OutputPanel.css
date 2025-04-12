@@ -11,7 +11,6 @@
   --button-hover: #414b66;
 }
 
-/* LIGHT THEME VARIABLES */
 :root[data-theme="vs-light"] {
   --output-bg: #f8f8f8;
   --output-text: #333333;
@@ -27,9 +26,6 @@
 
 /* CONTAINER STYLING */
 .output-panel-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   background-color: var(--output-bg);
   color: var(--output-text);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -126,7 +122,7 @@
 
 /* OUTPUT PANEL */
 .output-panel-right {
-  flex: 1;
+  flex: 1.2;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -344,25 +340,74 @@
   background: #a0a0a0;
 }
 
+/* RUN BUTTON STYLING */
 .run-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
   background-color: var(--success-color);
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 6px 12px;
   font-size: 13px;
   font-weight: 500;
-  cursor: pointer;
   transition: all 0.2s ease;
-}
-
-.run-button:hover {
-  opacity: 0.9;
 }
 
 .run-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.button-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  border-radius: 12px;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.run-button:hover .button-bg {
+  opacity: 0.9;
+}
+
+.button-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.loader-icon {
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+.loader-text, .play-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.play-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.test-button {
+  display: none;
 }
 
 .font-slider {
@@ -388,39 +433,6 @@
   border-left: 2px solid var(--success-color);
 }
 
-.empty-output {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--icon-color);
-  text-align: center;
-}
-
-.empty-icon {
-  font-size: 28px;
-  margin-bottom: 16px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--input-bg);
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
-
-/* Animation for the skeleton */
-@keyframes pulse {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
 .animate-pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
@@ -430,16 +442,6 @@
   overflow: hidden;
   background-color: var(--input-bg);
 }
-
-.output-clear-button {
-  /* This button only shows when there's output */
-  background-color: rgba(239, 68, 68, 0.1);
-}
-
-.output-clear-button:hover {
-  background-color: rgba(239, 68, 68, 0.2);
-}
-
 .input-clear-button {
   background-color: rgba(117, 86, 232, 0.1);
 }
@@ -448,26 +450,12 @@
   background-color: rgba(9, 7, 74, 0.2);
 }
 
-/* Add these styles for the input size warning */
-.input-warning {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--error-color);
-  font-size: 12px;
-  font-weight: 500;
-  margin-left: 8px;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(240deg);
+  }
 }
 
-.input-size-warning {
-  border: 1px solid var(--error-color) !important;
-  background-color: rgba(239, 68, 68, 0.05) !important;
-}
-
-.size-warning-message {
-  padding: 8px 16px;
-  background-color: rgba(239, 68, 68, 0.1);
-  color: var(--error-color);
-  font-size: 13px;
-  border-top: 1px solid var(--error-color);
-} 

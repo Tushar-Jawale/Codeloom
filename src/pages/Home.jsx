@@ -50,7 +50,6 @@ const Home = () => {
   return (
     <div className='HomeWrapper' data-theme={theme}>
         <div className='FormWrapper'>
-          {username && <Avatar username={username} size={50} />}
           <h4 className='mainLabel'>Paste Invitation ROOM ID</h4>
           <div className='inputGroup'>
               <input 

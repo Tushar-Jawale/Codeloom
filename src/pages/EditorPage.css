@@ -61,11 +61,6 @@
   color: var(--sidebar-text);
 }
 
-.userName {
-  margin-top: 7px;
-  color: var(--sidebar-text);
-}
-
 .btn {
   border: none;
   padding: 10px;
@@ -73,10 +68,10 @@
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: white;
 }
 
 .leaveBtn {
+  color:white;
   width: 100%;
   margin-top: 20px;
   background-color: var(--button-danger);
@@ -87,6 +82,7 @@
 }
 
 .copyBtn {
+  color:white;
   width: 100%;
   margin-top: 20px;
   background-color: var(--button-secondary);
