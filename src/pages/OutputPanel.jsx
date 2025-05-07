@@ -1,12 +1,17 @@
 import { CodeEditorService } from "../services/CodeEdtiorService";
 import { AlertTriangle, Clock, Terminal, Type, X } from "lucide-react";
 import "./OutputPanel.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-
-function OutputPanel() {
-  const { output, error, isRunning, executionResult, setInput, theme, clearOutput } = CodeEditorService();
+function OutputPanel({ socketRef, roomId }) {
+  const { output, error, isRunning, executionResult, setInput, input, theme, clearOutput } = CodeEditorService();
   const [inputText, setInputText] = useState("");
+
+  useEffect(() => {
+    if (input !== null) {
+      setInputText(input);
+    }
+  }, [input]);
 
   const formatOutput = (text) => {
     if (!text) return "";
@@ -20,12 +25,16 @@ function OutputPanel() {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setInputText(value);
-    setInput(value); 
+    setInput(value);
   };
   
   const handleClearInput = () => {
     setInputText("");
     setInput("");
+  };
+  
+  const handleClearOutput = () => {
+    clearOutput();
   };
 
   return (
@@ -57,6 +66,11 @@ function OutputPanel() {
               <Terminal size={16} className="output-icon" />
               <span className="output-title">Output</span>
             </div>
+            {output || error ? (
+              <button className="clear-button output-clear-button" onClick={handleClearOutput} title="Clear output">
+                Clear
+              </button>
+            ) : null}
           </div>
           <div className="output-area" data-theme={theme}>
             <div className="output-content">

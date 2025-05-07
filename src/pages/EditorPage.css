@@ -74,22 +74,22 @@
   color:white;
   width: 100%;
   margin-top: 20px;
-  background-color: var(--button-danger);
+  background-color: #dd1414;
 }
 
 .leaveBtn:hover {
-  background-color: var(--button-danger-hover);
+  background-color: #6c0707;
 }
 
 .copyBtn {
   color:white;
   width: 100%;
   margin-top: 20px;
-  background-color: var(--button-secondary);
+  background-color: #2563eb;
 }
 
 .copyBtn:hover {
-  background-color: var(--button-secondary-hover);
+  background-color: #0f2e72;
 }
 
 .editorWrapper {
@@ -102,4 +102,17 @@
 .editorWrapper > div {
   height: 100%;
   width: 100%;
-} 
+}
+
+.logoContainer {
+  border-bottom: 1px solid #424242;
+  padding-bottom: 0%;
+}
+
+.logo {
+  height: 60px;
+  margin-left: 2px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+

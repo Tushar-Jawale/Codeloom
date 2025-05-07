@@ -20,6 +20,11 @@ footer{
   bottom: 0;
 }
 
+.homepagelogo{
+  height: 80px;
+  margin-bottom: 20px;
+}
+
 .inputGroup{  
   display: flex;
   flex-direction: column;
@@ -28,11 +33,6 @@ footer{
 .mainLabel{
   margin-bottom: 20px;
   margin-top: 0;
-}
-
-.logo{
-  height: 80px;
-  margin-bottom: 30px;
 }
 
 .inputBox {
@@ -69,13 +69,13 @@ footer{
 
 .joinButton{
   color: #000;
-   background-color: #4aed88;
+   background-color: #2e6aeb;
    width: 100px;
    margin-left: auto;
 }
 
 .joinButton:hover{
-  background-color: #2b824c;
+  background-color: #163986;
 }
 
 .createInfo{
@@ -84,15 +84,15 @@ footer{
 }
 
 .createNewBtn{
-  color: #4aed88;
+  color: #2e6aeb;
   text-decoration: none;
-  border-bottom: 1px solid #4aed88;
+  border-bottom: 1px solid #2e6aeb;
   transition: all 0.3s ease-in-out;
 }
 
 .createNewBtn:hover{
-  color: #368654;
-  border-color: #368654;
+  color: #163986;
+  border-color: #163986;
 }
 
 .editorPage{

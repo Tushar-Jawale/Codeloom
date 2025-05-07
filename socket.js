@@ -12,8 +12,6 @@ export const initSocket = async () => {
         }
         return socket;
     }
-
-    console.log('Creating new socket connection');
     const options = {
         reconnection: true,
         reconnectionAttempts: 10,
@@ -24,7 +22,8 @@ export const initSocket = async () => {
         autoConnect: true,
     };
     
-    socket = io('http://localhost:5000', options);
+    const BACKEND_URL = process.env.VITE_BACKEND_URL;
+    socket = io(BACKEND_URL, options);
     
     socket.on('connect_error', (err) => {
         console.error('Socket connection error:', err);

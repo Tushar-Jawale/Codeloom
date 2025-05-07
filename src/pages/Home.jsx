@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {v4} from 'uuid';
 import toast from 'react-hot-toast';
+import logo from '../assets/logo.png'
 import {useNavigate} from 'react-router-dom';
-import Avatar from '../components/Avatar';
 import { CodeEditorService } from '../services/CodeEdtiorService';
 
 const Home = () => {
@@ -20,7 +20,6 @@ const Home = () => {
     storeUsername('');
   }, [storeRoomId, storeUsername]);
 
-  // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-editor-theme', theme);
   }, [theme]);
@@ -38,7 +37,16 @@ const Home = () => {
       return;
     }
     
-    navigate(`/editor/${roomId}`, { state: { username } });
+    localStorage.setItem('room-id', roomId);
+    localStorage.setItem('username', username);
+    
+    storeRoomId(roomId);
+    storeUsername(username);
+    
+    console.log(`Joining room ${roomId} as ${username}`);
+    navigate(`/editor/${roomId}`, { 
+      state: { username }
+    });
   };
 
   const handleKeyUp = (e) => {
@@ -46,10 +54,24 @@ const Home = () => {
       joinRoom();
     }
   }
+  
+  useEffect(() => {
+    const savedRoomId = localStorage.getItem('room-id');
+    const savedUsername = localStorage.getItem('username');
+    
+    if (savedRoomId) {
+      setRoomId(savedRoomId);
+    }
+    
+    if (savedUsername) {
+      setUsername(savedUsername);
+    }
+  }, []);
 
   return (
     <div className='HomeWrapper' data-theme={theme}>
         <div className='FormWrapper'>
+          {/* <img className='homepagelogo' src={logo} alt="logo"/> */}
           <h4 className='mainLabel'>Paste Invitation ROOM ID</h4>
           <div className='inputGroup'>
               <input 

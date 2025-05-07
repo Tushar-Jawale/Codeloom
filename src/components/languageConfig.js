@@ -121,20 +121,14 @@ export const LANGUAGE_CONFIG = {
 
 export default LANGUAGE_CONFIG;
 
-// Define the available themes
 export const THEMES = [
   { id: "vs-dark", label: "Dark Theme", color: "#1e1e1e" },
   { id: "vs-light", label: "Light Theme", color: "#ffffff" }
 ];
 
-// Theme definitions
-export const THEME_DEFINITIONS = {
-  // Keep only vs-dark and vs-light, which are built-in Monaco themes
-};
+export const THEME_DEFINITIONS={ }
 
-// Helper function to define themes in Monaco
 export const defineMonacoThemes = (monaco) => {
-  // Define all themes with complete token rules
   Object.entries(THEME_DEFINITIONS).forEach(([themeName, themeData]) => {
     monaco.editor.defineTheme(themeName, {
       base: themeData.base,

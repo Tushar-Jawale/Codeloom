@@ -1,7 +1,7 @@
 import LANGUAGE_CONFIG from "../components/languageConfig"
 import { create } from "zustand";
 import { saveCodeExecution } from "./localStorageService";
-import { compileCode } from "./judge0Service";
+import { executeCode } from "./judge0Service";
 
 const DEFAULT_CPU_TIME_LIMIT = 5;
 const DEFAULT_MEMORY_LIMIT = 128000;
@@ -65,7 +65,6 @@ export const CodeEditorService = create((set, get) => {
     editor: null,
     executionResult: null,
     
-
     getCode: () => {
       const editor = get().editor;
       if (!editor) return get().code;
@@ -164,52 +163,46 @@ export const CodeEditorService = create((set, get) => {
       localStorage.setItem("username", username);
       set({ username });
     },
+    
+    setOutputResults: (output, error, executionResult) => {
+      set({ 
+        output: output || "",
+        error: error || null,
+        executionResult: executionResult || null 
+      });
+    },
 
     runCode: async () => {
-      const { language, code, roomId, username, input } = get();
+      const { language, roomId, username, input } = get();
       const codeToRun = get().getCode();
-
+    
       if (!codeToRun) {
         set({ error: "Please enter some code" });
         return;
       }
-
+    
       set({ isRunning: true, error: null, output: "" });
-
+    
       try {
         if (!LANGUAGE_CONFIG[language]) {
           set({ error: `Language ${language} is not supported` });
           return;
         }
-        
+    
         if (!LANGUAGE_CONFIG[language].judge0Runtime) {
           set({ error: `Language ${language} runtime is not configured` });
           return;
         }
-        
-        const runtime = LANGUAGE_CONFIG[language].judge0Runtime;
-        
-        const requestData = {
-          language: runtime.language,
-          files: [{ content: codeToRun }],
-          stdin: input,
-          cpuTimeLimit: getCpuTimeLimit(),
-          memoryLimit: getMemoryLimit(),
-        };
-        
+    
         let data;
         try {
-          data = await compileCode(requestData);
+          data = await executeCode(codeToRun, language, input);
           console.log("Execution data received:", data);
-        } 
-          catch (serviceError) {
-            console.error("Got error from Judge0 service", serviceError);
-          }
-         
-        if (data.error) {
-          set({ error: `Execution service error: ${data.error}` });
-          
-          const result = { code: codeToRun, output: "", error: `Execution service error: ${data.error}` };
+        } catch (serviceError) {
+          console.error("Error from Judge0 service:", serviceError);
+          const errorMsg = serviceError?.message || "Unknown error during execution";
+          const result = { code: codeToRun, output: "", error: errorMsg };
+          set({ error: errorMsg, executionResult: result });
           try {
             await saveCodeExecution({
               input,
@@ -223,34 +216,41 @@ export const CodeEditorService = create((set, get) => {
           }
           return;
         }
-
-        if (data.message) {
-          const result = { code: codeToRun, output: "", error: data.message };
-          set({ error: data.message, executionResult: result });
-        }
-
-        if (data.compile && data.compile.code !== 0) {
-          const errorMsg = data.compile.stderr || data.compile.output;
-          const result = { code: codeToRun, output: "", error: errorMsg };
-          set({
-            error: errorMsg,
-            executionResult: result,
-          });
-        }
-
-        const output = data.run.output;
-        const allOutput = output || data.run.stderr || "";
-        const result = { code: codeToRun, output: allOutput.trim(), error: null };
-        
+    
+        const output = data.output || data.stdout || data.run?.output || "";
+        const stderr = data.error || data.stderr || data.run?.stderr || "";
+    
+        const allOutput = output || stderr || "No output";
+    
+        const result = {
+          code: codeToRun,
+          output: allOutput.trim(),
+          error: stderr ? stderr.trim() : null,
+        };
+    
         set({
           output: allOutput.trim(),
-          error: null,
+          error: stderr ? stderr.trim() : null,
           executionResult: result,
         });
+    
+        try {
+          await saveCodeExecution({
+            input,
+            roomId,
+            username,
+            language,
+            ...result
+          });
+        } catch (saveError) {
+          console.error("Failed to save execution:", saveError);
+        }
+    
       } finally {
         set({ isRunning: false });
       }
     },
+    
 
     clearOutput: () => {
       set({ output: "", error: null, executionResult: null });

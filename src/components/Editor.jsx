@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {LANGUAGE_CONFIG, defineMonacoThemes, THEMES, THEME_DEFINITIONS} from './languageConfig';
+import {LANGUAGE_CONFIG, defineMonacoThemes,} from './languageConfig';
 import OutputPanel from '../pages/OutputPanel';
 import { LuMoon } from "react-icons/lu";
 import { MdOutlineWbSunny } from "react-icons/md";
@@ -7,8 +7,9 @@ import { CodeEditorService } from '../services/CodeEdtiorService';
 import { Editor as MonacoEditor } from '@monaco-editor/react';
 import RunButton from './RunButton';
 import './Editor.css';
+import ACTIONS from '../Actions.js';
 
-const Editor = () => {
+const Editor = ({ socketRef, roomId, connectedUsers }) => {
   const { 
     language, 
     setLanguage, 
@@ -24,9 +25,12 @@ const Editor = () => {
   
   const [isCopied, setIsCopied] = useState(false);
   const monacoEditorRef = useRef(null);
+  const CodeRef = useRef(code);
   const monacoInstanceRef = useRef(null);
   const editorWrapperRef = useRef(null);
   const editorContainerRef = useRef(null);
+  const isReceivingCodeRef = useRef(false);
+  const lastReceivedCodeRef = useRef(null);
 
   const handleEditorDidMount = (editor, monaco) => {
     monacoEditorRef.current = editor;
@@ -51,6 +55,35 @@ const Editor = () => {
   };
 
   useEffect(() => {
+    if (socketRef.current && monacoEditorRef.current) {
+      const editor = monacoEditorRef.current;
+      const changeListener = editor.onDidChangeModelContent((event) => {
+        const { changes } = event;
+        const code = editor.getValue();
+        
+        if (changes[0]?.origin !== 'setValue') {
+          socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+            roomId,
+            language,
+            code,
+          });
+        }
+      });
+      socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code: newCode, language: newLanguage }) => {
+        if (newCode !== null) {
+          editor.setValue(newCode);
+          setLanguage(newLanguage);
+        }
+      });
+
+      return () => {
+        socketRef.current.off(ACTIONS.CODE_CHANGE);
+        changeListener.dispose();
+      };
+    }
+  }, [socketRef.current, roomId]);
+
+  useEffect(() => {
     if (monacoEditorRef.current) {
       monacoEditorRef.current.updateOptions({ 
         fontSize: fontSize,
@@ -62,7 +95,7 @@ const Editor = () => {
   }, [fontSize]);
 
   useEffect(() => {
-  document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
     if (monacoInstanceRef.current) {
       monacoInstanceRef.current.editor.setTheme(theme);
       if (monacoEditorRef.current) {
@@ -119,7 +152,9 @@ const Editor = () => {
   };
 
   const handleEditorChange = (value) => {
-    handleChange({ target: { value } });
+    if (!isReceivingCodeRef.current && value !== lastReceivedCodeRef.current) {
+      handleChange({ target: { value } });
+    }
   };
 
   const increaseFontSize = () => {
@@ -143,6 +178,7 @@ const Editor = () => {
       console.error('Failed to copy text: ', err);
     }
   };
+
   const monacoLanguage = LANGUAGE_CONFIG[language]?.monacoLanguage || language;
   const isDarkTheme = theme === 'vs-dark';
 
@@ -182,6 +218,10 @@ const Editor = () => {
           
           <div className="center-controls">
             <RunButton />
+            {roomId && connectedUsers?.length > 1 && <div className="collaboration-indicator">
+              <span className="sync-indicator"></span>
+              <span className="sync-text">Synced</span>
+            </div>}
           </div>
           
           <div className="editor-controls">
@@ -208,7 +248,11 @@ const Editor = () => {
               language={monacoLanguage}
               value={code}
               theme={theme}
-              onChange={handleEditorChange}
+              onChange={(value) => {
+                CodeRef.current = value;
+                handleEditorChange(value);
+              }}
+              
               onMount={handleEditorDidMount}
               options={{
                 minimap: { enabled: false },
@@ -236,25 +280,14 @@ const Editor = () => {
                 renderLineHighlight: 'line',
                 renderIndentGuides: true,
                 fixedOverflowWidgets: true,
-                guides: {
-                  indentation: true,
-                  highlightActiveIndentation: true,
-                },
-                cursorStyle: 'line',
-                cursorWidth: 2,
-                cursorBlinking: 'smooth',
-                smoothScrolling: true,
-                colorDecorators: true
+                cursorBlinking:'expand'
               }}
             />
           </div>
         </div>
       </div>
-      
       <div className="output-wrapper">
-        <div className="output-panel-container" data-theme={theme}>
-          <OutputPanel />
-        </div>
+        <OutputPanel socketRef={socketRef} roomId={roomId} />
       </div>
     </div>
   );

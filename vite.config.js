@@ -3,17 +3,15 @@ import react from '@vitejs/plugin-react'
 import { loadEnv } from 'vite'
 import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   
-  // Create an object with all NEXT_PUBLIC_ prefixed env variables
-  const envWithKeys = {};
-  Object.keys(env).forEach(key => {
-    if (key.startsWith('NEXT_PUBLIC_')) {
-      envWithKeys[`process.env.${key}`] = JSON.stringify(env[key]);
-    }
-  });
+  const envWithKeys = {
+    'process.env.VITE_RAPIDAPI_KEY': JSON.stringify('5732e8eddbmshfe8fbd2a72c48cfp17095ajsn837dfa94c3a1'),
+    'process.env.VITE_RAPIDAPI_HOST': JSON.stringify('judge0-ce.p.rapidapi.com'),
+    'process.env.VITE_BACKEND_URL': JSON.stringify('http://localhost:5000'),
+    'process.env.VITE_JUDGE0_API_URL': JSON.stringify('https://judge0-ce.p.rapidapi.com')
+  };
 
   return {
     plugins: [react()],
@@ -22,5 +20,6 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    define: envWithKeys
   }
 })
