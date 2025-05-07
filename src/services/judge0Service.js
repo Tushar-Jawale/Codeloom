@@ -1,6 +1,10 @@
-const JUDGE0_API_URL = process.env.VITE_JUDGE0_API_URL;
-const RAPIDAPI_KEY = process.env.VITE_RAPIDAPI_KEY;
-const RAPIDAPI_HOST = process.env.VITE_RAPIDAPI_HOST;
+const JUDGE0_API_URL = import.meta.env.VITE_JUDGE0_API_URL;
+const RAPIDAPI_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
+const RAPIDAPI_HOST = import.meta.env.VITE_RAPIDAPI_HOST;
+
+if (!JUDGE0_API_URL || !RAPIDAPI_KEY || !RAPIDAPI_HOST) {
+  throw new Error('Judge0 API configuration is missing. Please set VITE_JUDGE0_API_URL, VITE_RAPIDAPI_KEY, and VITE_RAPIDAPI_HOST in your environment variables.');
+}
 
 const toBase64 = (str) => {
     return btoa(unescape(encodeURIComponent(str)));
@@ -26,6 +30,7 @@ const LANGUAGE_IDS = {
     "swift": 83,
 };
 
+// Create a new submission
 const createSubmission = async (sourceCode, languageId, input = '') => {
     try {
         const response = await fetch(`${JUDGE0_API_URL}/submissions/?base64_encoded=true`, {

@@ -21,8 +21,9 @@ footer{
 }
 
 .homepagelogo{
-  height: 80px;
-  margin-bottom: 20px;
+  align-items: center;
+  height: 120px;
+  margin-bottom: 0px;
 }
 
 .inputGroup{  
@@ -33,6 +34,11 @@ footer{
 .mainLabel{
   margin-bottom: 20px;
   margin-top: 0;
+}
+
+.logo{
+  height: 80px;
+  margin-bottom: 30px;
 }
 
 .inputBox {

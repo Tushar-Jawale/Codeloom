@@ -20,6 +20,8 @@ const EditorPage = () => {
     setUsername, 
     theme,
     setCode,
+    code,
+    language,
     setLanguage,
   } = CodeEditorService();
   const [connectedUsers, setConnectedUsers] = useState([]);
@@ -29,6 +31,7 @@ const EditorPage = () => {
   const socketRef = useRef(null);
   const socketInitializedRef = useRef(false);
   const eventHandlersRegisteredRef = useRef(false);
+  const codeChangeTimeoutRef = useRef(null);
   
   useEffect(() => {
     if (roomId) {
@@ -120,6 +123,18 @@ const EditorPage = () => {
             }
           });
           
+          socketRef.current.on(ACTIONS.SYNC_CODE, ({ code: newCode, language: newLanguage }) => {
+            console.log('Received code sync data');
+            
+            if (newCode) {
+              setCode(newCode);
+            }
+            
+            if (newLanguage && newLanguage !== CodeEditorService.getState().language) {
+              setLanguage(newLanguage);
+            }
+          });
+          
           eventHandlersRegisteredRef.current = true;
         }
         
@@ -130,6 +145,7 @@ const EditorPage = () => {
         }
        
       } catch (err) {
+        console.error('Socket initialization error:', err);
         toast.error('Failed to connect to the server');
         navigate('/');
       }
@@ -158,6 +174,30 @@ const EditorPage = () => {
     };
   }, [roomId, username, navigate, setCode, setLanguage]);
   
+  useEffect(() => {
+    if (!socketRef.current || !socketRef.current._hasJoinedRoom || !roomId) return;
+    
+    if (codeChangeTimeoutRef.current) {
+      clearTimeout(codeChangeTimeoutRef.current);
+    }
+    
+    codeChangeTimeoutRef.current = setTimeout(() => {
+      console.log(`Emitting code changes to room ${roomId}`);
+      socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+        roomId,
+        code,
+        language,
+        socketId: socketRef.current.id
+      });
+    }, 200); 
+    
+    return () => {
+      if (codeChangeTimeoutRef.current) {
+        clearTimeout(codeChangeTimeoutRef.current);
+      }
+    };
+  }, [code, language, roomId]);
+
   const copyRoomId = async () => {
     await copy(roomId);
     toast.success('Room ID copied to clipboard!');
@@ -180,11 +220,7 @@ const EditorPage = () => {
             <div className='logoContainer'>
               <img className='logo' src={logo} alt='logo'/>
             </div>
-            <h3>
-              {connectedUsers.length > 1 
-                ? `Connected Users (${connectedUsers.length})`
-                : 'Connected Users'}
-            </h3>
+            <h3>Connected Users ({connectedUsers.length})</h3>
             <div className='connectedUsersContainer'>
               {
                 connectedUsers.map((user) => (
@@ -203,4 +239,4 @@ const EditorPage = () => {
   )
 }
 
-export default EditorPage;
+export default EditorPage

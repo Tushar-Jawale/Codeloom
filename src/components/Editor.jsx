@@ -8,8 +8,7 @@ import { Editor as MonacoEditor } from '@monaco-editor/react';
 import RunButton from './RunButton';
 import './Editor.css';
 import ACTIONS from '../Actions.js';
-
-const Editor = ({ socketRef, roomId, connectedUsers }) => {
+const Editor = ({ socketRef, roomId }) => {
   const { 
     language, 
     setLanguage, 
@@ -60,7 +59,10 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
       const changeListener = editor.onDidChangeModelContent((event) => {
         const { changes } = event;
         const code = editor.getValue();
-        
+        if (isReceivingCodeRef.current) {
+          isReceivingCodeRef.current = false;
+          return;
+        }
         if (changes[0]?.origin !== 'setValue') {
           socketRef.current.emit(ACTIONS.CODE_CHANGE, {
             roomId,
@@ -71,6 +73,7 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
       });
       socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code: newCode, language: newLanguage }) => {
         if (newCode !== null) {
+          isReceivingCodeRef.current = true;
           editor.setValue(newCode);
           setLanguage(newLanguage);
         }
@@ -108,7 +111,6 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
     if (editorContainerRef.current) {
       editorContainerRef.current.setAttribute('data-theme', theme);
     }
-    document.documentElement.setAttribute('data-editor-theme', theme);
     document.body.setAttribute('data-theme', theme);
     const updateElements = (selector, themeAttribute) => {
       const elements = document.querySelectorAll(selector);
@@ -121,7 +123,6 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
     updateElements('.output-panel-right', theme);
     updateElements('.output-area', theme);
     updateElements('.input-textarea', theme);
-    
   }, [theme]);
 
   const toggleTheme = () => {
@@ -218,7 +219,7 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
           
           <div className="center-controls">
             <RunButton />
-            {roomId && connectedUsers?.length > 1 && <div className="collaboration-indicator">
+            {roomId && <div className="collaboration-indicator">
               <span className="sync-indicator"></span>
               <span className="sync-text">Synced</span>
             </div>}
@@ -243,6 +244,7 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
         <div className="editor-container" ref={editorWrapperRef}>
           <div className="monaco-editor-container">
             <MonacoEditor
+              key={language}
               height="100%"
               width="100%"
               language={monacoLanguage}
@@ -280,7 +282,11 @@ const Editor = ({ socketRef, roomId, connectedUsers }) => {
                 renderLineHighlight: 'line',
                 renderIndentGuides: true,
                 fixedOverflowWidgets: true,
-                cursorBlinking:'expand'
+                guides: {
+                  indentation: true,
+                  highlightActiveIndentation: true,
+                },
+                cursorBlinking: 'expand',
               }}
             />
           </div>

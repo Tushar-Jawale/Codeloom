@@ -45,14 +45,27 @@ io.on("connection", (socket) => {
     socket.in(roomId).emit(ACTIONS.CODE_CHANGE, {
       code,
       language,
+      socketId: socket.id
     });
   });
 
   socket.on(ACTIONS.SYNC_CODE, ({ code, language, socketId }) => {
-    io.to(socketId).emit(ACTIONS.SYNC_CODE, {
-      code,
-      language
+    console.log(`User ${socket.id} syncing code to ${socketId}`, {
+      language,
+      codePreview: code ? (code.substring(0, 50) + '...') : 'No code'
     });
+    
+    // Ensure we have a valid socketId to send the sync to
+    if (socketId && io.sockets.sockets.has(socketId)) {
+      io.to(socketId).emit(ACTIONS.SYNC_CODE, {
+        code,
+        language,
+        socketId: socket.id
+      });
+      console.log(`Successfully sent sync to ${socketId}`);
+    } else {
+      console.log(`Failed to sync code: Invalid socketId ${socketId}`);
+    }
   });
 
   socket.on('disconnecting', () => {

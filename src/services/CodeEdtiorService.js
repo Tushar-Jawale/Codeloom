@@ -28,7 +28,7 @@ const getInitialState = () => {
   if (typeof window === "undefined") {
     return {
       language: "javascript",
-      fontSize: 14,
+      fontSize: 16,
       theme: "vs-dark",
       roomId: "",
       username: "",
@@ -118,17 +118,14 @@ export const CodeEditorService = create((set, get) => {
         else if (editor.value !== undefined) {
           currentCode = editor.value;
         }
-        
         if (currentCode) {
           localStorage.setItem(`editor-code-${get().language}`, currentCode);
         }
       }
-
       localStorage.setItem("editor-language", language);
-      
+      // Use saved code if available, otherwise default template
       const savedCode = localStorage.getItem(`editor-code-${language}`);
       const code = savedCode || LANGUAGE_CONFIG[language].defaultCode;
-      
       set({
         language,
         code,
