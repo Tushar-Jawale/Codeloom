@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run build && npm run start",
+    "dev:front": "vite",
     "build": "vite build",
     "start": "node server.js",
     "dev:server": "nodemon server.js",
@@ -44,7 +45,8 @@
     "socket-client": "^1.0.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

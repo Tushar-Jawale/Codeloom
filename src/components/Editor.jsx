@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {LANGUAGE_CONFIG, defineMonacoThemes,} from './languageConfig';
+import {LANGUAGE_CONFIG} from './languageConfig';
 import OutputPanel from '../pages/OutputPanel';
 import { LuMoon } from "react-icons/lu";
 import { MdOutlineWbSunny } from "react-icons/md";
@@ -8,7 +8,7 @@ import { Editor as MonacoEditor } from '@monaco-editor/react';
 import RunButton from './RunButton';
 import './Editor.css';
 import ACTIONS from '../Actions.js';
-const Editor = ({ socketRef, roomId }) => {
+const Editor = ({ socketRef, roomId, connectedUsers = [] }) => {
   const { 
     language, 
     setLanguage, 
@@ -35,7 +35,6 @@ const Editor = ({ socketRef, roomId }) => {
     monacoEditorRef.current = editor;
     monacoInstanceRef.current = monaco;
     setEditor(editor);
-    defineMonacoThemes(monaco);
     monaco.editor.setTheme(theme);
     
     const editorDomNode = editor.getDomNode();
@@ -128,28 +127,6 @@ const Editor = ({ socketRef, roomId }) => {
   const toggleTheme = () => {
     const newTheme = theme === 'vs-dark' ? 'vs-light' : 'vs-dark';
     setTheme(newTheme);
-    setTimeout(() => {
-      document.documentElement.setAttribute('data-theme', newTheme);
-      document.body.setAttribute('data-theme', newTheme);
-      const updateElements = (selector, themeAttribute) => {
-        const elements = document.querySelectorAll(selector);
-        elements.forEach(el => {
-          el.setAttribute('data-theme', themeAttribute);
-        });
-      };
-      
-      updateElements('.output-panel-container', newTheme);
-      updateElements('.input-panel', newTheme);
-      updateElements('.output-panel-right', newTheme);
-      updateElements('.output-area', newTheme);
-      updateElements('.input-textarea', newTheme);
-      const outputPanel = document.querySelector('.output-panel-container');
-      if (outputPanel) {
-        outputPanel.style.display = 'none';
-        outputPanel.offsetHeight;
-        outputPanel.style.display = 'flex';
-      }
-    }, 50);
   };
 
   const handleEditorChange = (value) => {
@@ -219,10 +196,12 @@ const Editor = ({ socketRef, roomId }) => {
           
           <div className="center-controls">
             <RunButton />
-            {roomId && <div className="collaboration-indicator">
-              <span className="sync-indicator"></span>
-              <span className="sync-text">Synced</span>
-            </div>}
+            {roomId && connectedUsers.length > 1 && (
+              <div className="collaboration-indicator">
+                <span className="sync-indicator"></span>
+                <span className="sync-text">Synced</span>
+              </div>
+            )}
           </div>
           
           <div className="editor-controls">
@@ -232,12 +211,8 @@ const Editor = ({ socketRef, roomId }) => {
               <span className="font-size-value">{fontSize}</span>
               <button onClick={increaseFontSize} className="font-size-button">+</button>
             </div>
-            <button onClick={handleCopy} className="action-button">
-              {isCopied ? 'Copied!' : 'Copy'}
-            </button>
-            <button onClick={handleRefresh} className="action-button">
-              Reset
-            </button>
+            <button onClick={handleCopy} className="action-button">{isCopied ? 'Copied!' : 'Copy'}</button>
+            <button onClick={handleRefresh} className="action-button">Reset</button>
           </div>
         </div>
                 

@@ -1,28 +1,6 @@
 import LANGUAGE_CONFIG from "../components/languageConfig"
 import { create } from "zustand";
-import { saveCodeExecution } from "./localStorageService";
 import { executeCode } from "./judge0Service";
-
-const DEFAULT_CPU_TIME_LIMIT = 5;
-const DEFAULT_MEMORY_LIMIT = 128000;
-
-const getCpuTimeLimit = () => {
-  try {
-    return typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_CPU_TIME_LIMIT ? 
-      Number(process.env.NEXT_PUBLIC_CPU_TIME_LIMIT) : DEFAULT_CPU_TIME_LIMIT;
-  } catch (error) {
-    return DEFAULT_CPU_TIME_LIMIT;
-  }
-};
-
-const getMemoryLimit = () => {
-  try {
-    return typeof process !== 'undefined' && process.env && process.env.NEXT_PUBLIC_MEMORY_LIMIT ? 
-      Number(process.env.NEXT_PUBLIC_MEMORY_LIMIT) : DEFAULT_MEMORY_LIMIT;
-  } catch (error) {
-    return DEFAULT_MEMORY_LIMIT;
-  }
-};
 
 const getInitialState = () => {
   if (typeof window === "undefined") {
@@ -123,7 +101,6 @@ export const CodeEditorService = create((set, get) => {
         }
       }
       localStorage.setItem("editor-language", language);
-      // Use saved code if available, otherwise default template
       const savedCode = localStorage.getItem(`editor-code-${language}`);
       const code = savedCode || LANGUAGE_CONFIG[language].defaultCode;
       set({
@@ -194,23 +171,12 @@ export const CodeEditorService = create((set, get) => {
         let data;
         try {
           data = await executeCode(codeToRun, language, input);
-          console.log("Execution data received:", data);
+          // console.log("Execution data received:", data);
         } catch (serviceError) {
           console.error("Error from Judge0 service:", serviceError);
           const errorMsg = serviceError?.message || "Unknown error during execution";
           const result = { code: codeToRun, output: "", error: errorMsg };
           set({ error: errorMsg, executionResult: result });
-          try {
-            await saveCodeExecution({
-              input,
-              roomId,
-              username,
-              language,
-              ...result
-            });
-          } catch (saveError) {
-            console.error("Failed to save execution:", saveError);
-          }
           return;
         }
     
@@ -231,24 +197,11 @@ export const CodeEditorService = create((set, get) => {
           executionResult: result,
         });
     
-        try {
-          await saveCodeExecution({
-            input,
-            roomId,
-            username,
-            language,
-            ...result
-          });
-        } catch (saveError) {
-          console.error("Failed to save execution:", saveError);
-        }
-    
       } finally {
         set({ isRunning: false });
       }
     },
     
-
     clearOutput: () => {
       set({ output: "", error: null, executionResult: null });
     },

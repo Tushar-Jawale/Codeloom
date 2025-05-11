@@ -30,7 +30,6 @@ const LANGUAGE_IDS = {
     "swift": 83,
 };
 
-// Create a new submission
 const createSubmission = async (sourceCode, languageId, input = '') => {
     try {
         const response = await fetch(`${JUDGE0_API_URL}/submissions/?base64_encoded=true`, {

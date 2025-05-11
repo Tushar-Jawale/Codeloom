@@ -120,25 +120,3 @@ export const LANGUAGE_CONFIG = {
 };
 
 export default LANGUAGE_CONFIG;
-
-export const THEMES = [
-  { id: "vs-dark", label: "Dark Theme", color: "#1e1e1e" },
-  { id: "vs-light", label: "Light Theme", color: "#ffffff" }
-];
-
-export const THEME_DEFINITIONS={ }
-
-export const defineMonacoThemes = (monaco) => {
-  Object.entries(THEME_DEFINITIONS).forEach(([themeName, themeData]) => {
-    monaco.editor.defineTheme(themeName, {
-      base: themeData.base,
-      inherit: themeData.inherit,
-      rules: themeData.rules.map((rule) => ({
-        ...rule,
-        foreground: rule.foreground,
-        fontStyle: rule.fontStyle || '',
-      })),
-      colors: themeData.colors,
-    });
-  });
-};

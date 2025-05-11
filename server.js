@@ -1,12 +1,20 @@
-// server.js
 import http from "http";
 import express from "express";
 import ACTIONS from "./src/Actions.js";
 import cors from "cors";
 import { Server } from "socket.io";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
+app.use(express.static("dist"));
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -55,17 +63,14 @@ io.on("connection", (socket) => {
       codePreview: code ? (code.substring(0, 50) + '...') : 'No code'
     });
     
-    // Ensure we have a valid socketId to send the sync to
     if (socketId && io.sockets.sockets.has(socketId)) {
       io.to(socketId).emit(ACTIONS.SYNC_CODE, {
         code,
         language,
         socketId: socket.id
       });
-      console.log(`Successfully sent sync to ${socketId}`);
-    } else {
-      console.log(`Failed to sync code: Invalid socketId ${socketId}`);
-    }
+      // console.log(`Successfully sent sync to ${socketId}`);
+    } 
   });
 
   socket.on('disconnecting', () => {

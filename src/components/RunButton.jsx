@@ -17,8 +17,7 @@ function RunButton() {
         disabled={isRunning}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="run-button"
-      >
+        className="run-button">
         <div className="button-bg" />
         <div className="button-content">
           {isRunning ? (

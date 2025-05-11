@@ -2,12 +2,6 @@
   --sidebar-bg: #1c1e29;
   --sidebar-text: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --button-primary: #4aacf3;
-  --button-primary-hover: #3b8fd3;
-  --button-danger: #ef4444;
-  --button-danger-hover: #dc2626;
-  --button-secondary: #6b7280;
-  --button-secondary-hover: #4b5563;
 }
 
 /* Theme-specific variables for sidebar */
@@ -15,12 +9,6 @@
   --sidebar-bg: #f0f0f0;
   --sidebar-text: #333333;
   --sidebar-border: #d0d0d0;
-  --button-primary: #0078d4;
-  --button-primary-hover: #0067b8;
-  --button-danger: #dc2626;
-  --button-danger-hover: #b91c1c;
-  --button-secondary: #6b7280;
-  --button-secondary-hover: #4b5563;
 }
 
 .editorPage {
@@ -115,4 +103,3 @@
   margin-top: 5px;
   margin-bottom: 15px;
 }
-

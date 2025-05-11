@@ -5,6 +5,9 @@
   --editor-header-bg: #1c1e29;
   --editor-control-bg: #2c2c2c;
   --editor-highlight: #61afef;
+  --text-color: #e0e0e0;
+  --button-bg: rgba(117, 86, 232, 0.1);
+  --button-hover: rgba(9, 7, 74, 0.2);
 }
 
 :root[data-theme="vs-light"] {
@@ -14,6 +17,9 @@
   --editor-header-bg: #f0f0f0;
   --editor-control-bg: #e5e5e5;
   --editor-highlight: #0078d4;
+  --text-color: #333333;
+  --button-bg: rgba(117, 86, 232, 0.1);
+  --button-hover: rgba(9, 7, 74, 0.2);
 }
 
 .editor-container-with-output {
@@ -116,7 +122,7 @@
 }
 
 .font-size-button {
-  background-color: rgba(117, 86, 232, 0.1);
+  background-color: var(--button-bg);
   color: var(--editor-text);
   border: 1px solid white;
   border-radius: 4px;
@@ -131,7 +137,7 @@
 }
 
 .font-size-button:hover {
-  background-color: rgba(9, 7, 74, 0.2);
+  background-color: var(--button-hover);
 }
 
 .font-size-value {
@@ -164,15 +170,8 @@
   width: 100%;
 }
 
-.output-panel-container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .action-button {
-  background-color: rgba(117, 86, 232, 0.1);
+  background-color: var(--button-bg);
   color: var(--editor-text);
   border: 1px solid white;
   border-radius: 4px;
@@ -186,12 +185,13 @@
 }
 
 .action-button:hover {
-  background-color: rgba(9, 7, 74, 0.2);
+  background-color: var(--button-hover);
 }
 
 .action-button:active {
   transform: translate3d(0, 0, 0);
 }
+
 .theme-toggle-button {
   display: flex;
   align-items: center;
@@ -223,7 +223,6 @@
   height: 20px;
 }
 
-
 .monaco-editor-container {
   flex: 1;
   height: 100%;
@@ -250,6 +249,7 @@
   background-color: #1e1e2e !important;
   border-right: none !important;
 }
+
 .monaco-editor .margin-view-overlays .line-numbers {
   font-size: 100% !important;
   text-align: right !important;
@@ -260,6 +260,7 @@
   border: none !important;
   background-color: rgba(60, 60, 60, 0.36) !important;
 }
+
 .monaco-editor[data-theme="vs-light"] .margin {
   background-color: #f3f3f3 !important;
   border-right: none !important;
@@ -269,7 +270,6 @@
   background-color: rgba(0, 0, 0, 0.06) !important;
 }
 
-/* Add styles for collaboration indicator */
 .collaboration-indicator {
   display: flex;
   align-items: center;
@@ -292,14 +292,69 @@
   color: var(--text-color);
 }
 
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+.run-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  outline: none;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.run-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.run-button:hover  {
+  opacity: 0.9;
+  background-color: #0f2e72;
+}
+
+.button-content {
+  position: relative;
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.loader-icon {
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+.loader-text, .play-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.play-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.button-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  70% {
-    box-shadow: 0 0 0 5px rgba(76, 175, 80, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  to {
+    transform: rotate(240deg);
   }
 }

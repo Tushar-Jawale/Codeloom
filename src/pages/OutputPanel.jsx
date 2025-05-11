@@ -3,8 +3,8 @@ import { AlertTriangle, Clock, Terminal, Type, X } from "lucide-react";
 import "./OutputPanel.css";
 import { useState, useEffect } from "react";
 
-function OutputPanel({ socketRef, roomId }) {
-  const { output, error, isRunning, executionResult, setInput, input, theme, clearOutput } = CodeEditorService();
+function OutputPanel() {
+  const { output, error, isRunning,setInput, input, theme, clearOutput } = CodeEditorService();
   const [inputText, setInputText] = useState("");
 
   useEffect(() => {
@@ -66,11 +66,7 @@ function OutputPanel({ socketRef, roomId }) {
               <Terminal size={16} className="output-icon" />
               <span className="output-title">Output</span>
             </div>
-            {output || error ? (
-              <button className="clear-button output-clear-button" onClick={handleClearOutput} title="Clear output">
-                Clear
-              </button>
-            ) : null}
+
           </div>
           <div className="output-area" data-theme={theme}>
             <div className="output-content">
