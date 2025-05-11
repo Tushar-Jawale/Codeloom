@@ -43,12 +43,12 @@ npm install
 
 3. Start the development server
 ```bash
-npm run dev
+npm run dev:full
 
 
 4. For frontend development only
 ```bash
-npm run dev:front
+npm run dev
 
 5. For backend development only
 ```bash
