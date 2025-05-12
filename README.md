@@ -57,8 +57,8 @@ npm run dev:server
 
 ## 📝 Available Scripts
 
-- `npm run dev` - Builds and starts the full application
-- `npm run dev:front` - Starts the frontend development server
+- `npm run dev:full` - Builds and starts the full application
+- `npm run dev` - Starts the frontend development server
 - `npm run dev:server` - Starts the backend server
 - `npm run build` - Builds the application for production
 - `npm run start` - Starts the production server
